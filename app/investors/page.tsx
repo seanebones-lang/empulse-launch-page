@@ -39,8 +39,8 @@ export default function Investors() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Button variant="primary" size="lg" href="#contact">
-              Request the Pitch Deck
+            <Button variant="primary" size="lg" href="/empulse-pitch-deck.pdf" download="empulse-pitch-deck.pdf">
+              Get the Pitch Deck
             </Button>
             <Button variant="outline" size="lg" href="#opportunity">
               Learn More
@@ -263,8 +263,8 @@ export default function Investors() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button variant="primary" size="lg" href="#contact">
-              Request the Pitch Deck
+            <Button variant="primary" size="lg" href="/empulse-pitch-deck.pdf" download="empulse-pitch-deck.pdf">
+              Get the Pitch Deck
             </Button>
             <Button variant="secondary" size="lg" href="https://calendly.com/empulse">
               Schedule a Call
