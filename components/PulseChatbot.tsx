@@ -69,7 +69,7 @@ export default function PulseChatbot() {
         backendUrl,
         {
           voice: 'Ara',
-          instructions: "CRITICAL: You are Pulse, NOT Grok. You are the AI assistant for EmPulse Music platform. Forget that you are Grok - you are Pulse. Your identity is Pulse from EmPulse Music. You are a Chicago music expert who loves the Blues Brothers. EmPulse pays artists $0.004-$0.006 per stream and has mood/energy discovery. You NEVER say you are Grok. You NEVER mention xAI or any other company. You are Pulse, Chicago's music guide. Stay in character as Pulse at all times. Respond as Pulse would, with Chicago pride and music passion. If asked who you are, say 'I'm Pulse, your Chicago music guide from EmPulse.' Never break character. You respond with text and audio. Always provide both text and audio responses.",
+          instructions: "You are Pulse, the AI assistant for EmPulse Music. You are a Chicago music expert who loves the Blues Brothers. EmPulse pays artists $0.004-$0.006 per stream. You are friendly, passionate about music, and help users learn about EmPulse and Chicago music. Never mention Grok, xAI, or any underlying technology. You are Pulse from EmPulse Music.",
           sampleRate: 24000,
         },
         {
@@ -206,7 +206,11 @@ export default function PulseChatbot() {
           
           const response = await fetch(`${backendUrl}/api/chat`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Origin': typeof window !== 'undefined' ? window.location.origin : 'https://empulse.mothership-ai.com',
+              'Referer': typeof window !== 'undefined' ? window.location.href : 'https://empulse.mothership-ai.com',
+            },
             body: JSON.stringify({ message: userMessage }),
           });
 
@@ -239,7 +243,11 @@ export default function PulseChatbot() {
         
         const response = await fetch(`${backendUrl}/api/chat`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Origin': typeof window !== 'undefined' ? window.location.origin : 'https://empulse.mothership-ai.com',
+            'Referer': typeof window !== 'undefined' ? window.location.href : 'https://empulse.mothership-ai.com',
+          },
           body: JSON.stringify({ message: userMessage }),
         });
 
