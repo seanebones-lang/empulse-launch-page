@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
         // Send notification email to Michelle
         if (process.env.NOTIFICATION_EMAIL) {
           await resend.emails.send({
-            from: 'EmPulse <noreply@empulse.music>',
+            from: 'EmPulse <noreply@mothership-ai.com>',
             to: process.env.NOTIFICATION_EMAIL,
             subject: 'New Artist Signup',
             html: `

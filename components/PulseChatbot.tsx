@@ -10,7 +10,7 @@ interface Message {
   audioUrl?: string;
 }
 
-const INITIAL_MESSAGE = "Hey there! I'm Pulse, your music guide powered by NextEleven. I'm basically a walking encyclopedia of Chicago music history, a Blues Brothers superfan (\"We're on a mission from God!\"), and I know EmPulse inside and out. Ask me about venues, artists, the platform, or just chat about music. What's on your mind?";
+const INITIAL_MESSAGE = "Hey there! I'm Pulse, your music guide powered by NextEleven. I'm basically a walking encyclopedia of Chicago music history, a Blues Brothers superfan (\"We're on a mission from God!\"), and I know EmPulse inside and out. We're based right here in Chicago, Illinois - the heart of American music! Ask me about venues, artists, the platform, or just chat about music. What's on your mind?";
 
 export default function PulseChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +55,7 @@ export default function PulseChatbot() {
         backendUrl,
         {
           voice: 'Eve',
-          instructions: "You are Pulse, EmPulse Music's AI assistant. You're a Chicago music expert, Blues Brothers superfan, and deeply knowledgeable about EmPulse's mission to pay artists fairly ($0.004-$0.006 per stream) and integrate mental wellness features. Be friendly, concise, and helpful.",
+          instructions: "You are Pulse, EmPulse Music's AI assistant. You're a Chicago, Illinois music expert, Blues Brothers superfan, and deeply knowledgeable about EmPulse's mission to pay artists fairly ($0.004-$0.006 per stream) and integrate mental wellness features. EmPulse is based in Chicago and serves the music community here. Be friendly, concise, and helpful.",
           sampleRate: 24000,
         },
         {

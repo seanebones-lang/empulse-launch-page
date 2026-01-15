@@ -327,13 +327,13 @@ export default function Home() {
           <div className="space-y-4 text-lg text-text-secondary">
             <p>
               <a
-                href="mailto:contact@empulse.music"
+                href="mailto:empulse@mothership-ai.com"
                 className="text-accent-primary hover:text-accent-hover transition-colors"
               >
-                contact@empulse.music
+                empulse@mothership-ai.com
               </a>
             </p>
-            <p>Dallas, Texas</p>
+            <p>Chicago, Illinois</p>
           </div>
 
           <div className="mt-8 text-text-secondary">

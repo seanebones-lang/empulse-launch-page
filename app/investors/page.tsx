@@ -246,7 +246,7 @@ export default function Investors() {
 
             <div className="mt-8 text-center text-text-secondary">
               <p className="font-semibold text-text-primary mb-2">NextEleven Studios LLC</p>
-              <p>Dallas, Texas • Filed December 2025</p>
+              <p>Chicago, Illinois • Filed December 2025</p>
               <p className="mt-2">EmPulse is our flagship product.</p>
             </div>
           </div>

@@ -56,8 +56,8 @@ export default function Footer() {
             <ul className="space-y-2 text-text-secondary">
               <li>Dallas, Texas</li>
               <li>
-                <a href="mailto:contact@empulse.music" className="hover:text-text-primary transition-colors">
-                  contact@empulse.music
+                <a href="mailto:empulse@mothership-ai.com" className="hover:text-text-primary transition-colors">
+                  empulse@mothership-ai.com
                 </a>
               </li>
             </ul>

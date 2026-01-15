@@ -20,8 +20,8 @@ const PULSE_PERSONALITY = {
       launch: "Q1 2026 public launch, beta live at blue7.dev",
     },
     contact: {
-      general: "contact@empulse.music",
-      investors: "investors@empulse.music",
+      general: "empulse@mothership-ai.com",
+      investors: "empulse@mothership-ai.com",
       founder: "Michelle Dudley, CEO/Founder",
     }
   }
