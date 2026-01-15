@@ -281,7 +281,7 @@ export class XAIVoiceClient {
     return buffer;
   }
 
-  private send(message: any) {
+  private send(message: Record<string, unknown>) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
     }

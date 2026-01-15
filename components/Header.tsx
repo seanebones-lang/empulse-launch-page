@@ -21,6 +21,7 @@ export default function Header() {
 
   // Close mobile menu when route changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     setIsMobileMenuOpen(false);
   }, [pathname]);
 

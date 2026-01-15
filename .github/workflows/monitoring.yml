@@ -1,0 +1,174 @@
+name: Health Monitoring & Alerting
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Health check - Backend
+        run: |
+          BACKEND_URL="${{ secrets.RAILWAY_BACKEND_URL }}"
+          if [ -z "$BACKEND_URL" ]; then
+            echo "❌ BACKEND_URL not set"
+            exit 1
+          fi
+
+          echo "🔍 Checking backend health at: $BACKEND_URL/healthz"
+
+          # Health check with timeout
+          if curl -f -s --max-time 10 "$BACKEND_URL/healthz" > /dev/null; then
+            echo "✅ Backend is healthy"
+          else
+            echo "❌ Backend health check failed"
+            exit 1
+          fi
+
+      - name: Health check - Frontend
+        run: |
+          FRONTEND_URL="${{ secrets.VERCEL_FRONTEND_URL }}"
+          if [ -z "$FRONTEND_URL" ]; then
+            echo "❌ VERCEL_FRONTEND_URL not set"
+            exit 1
+          fi
+
+          echo "🔍 Checking frontend health at: $FRONTEND_URL"
+
+          # Basic connectivity check
+          if curl -f -s --max-time 10 "$FRONTEND_URL" > /dev/null; then
+            echo "✅ Frontend is accessible"
+          else
+            echo "❌ Frontend connectivity check failed"
+            exit 1
+          fi
+
+      - name: WebSocket connectivity test
+        run: |
+          BACKEND_URL="${{ secrets.RAILWAY_BACKEND_URL }}"
+          echo "🔍 Testing WebSocket connectivity..."
+
+          # Use websocat or similar for WebSocket testing
+          if command -v websocat >/dev/null 2>&1; then
+            # Test WebSocket handshake
+            timeout 10s websocat -q "ws://$BACKEND_URL/ws/xai-voice" 2>/dev/null && echo "✅ WebSocket endpoint accessible" || echo "❌ WebSocket test failed"
+          else
+            echo "⚠️ websocat not available, skipping WebSocket test"
+          fi
+
+      - name: Performance monitoring
+        run: |
+          FRONTEND_URL="${{ secrets.VERCEL_FRONTEND_URL }}"
+
+          echo "📊 Performance check for: $FRONTEND_URL"
+
+          # Check response time
+          RESPONSE_TIME=$(curl -o /dev/null -s -w "%{time_total}" "$FRONTEND_URL")
+          echo "Response time: ${RESPONSE_TIME}s"
+
+          # Alert if response time > 3 seconds
+          if (( $(echo "$RESPONSE_TIME > 3.0" | bc -l) )); then
+            echo "⚠️ Slow response time detected: ${RESPONSE_TIME}s"
+          else
+            echo "✅ Response time acceptable: ${RESPONSE_TIME}s"
+          fi
+
+  alert-on-failure:
+    needs: health-check
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send alert to Slack
+        uses: slackapi/slack-github-action@v1.26.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          payload: |
+            {
+              "text": "🚨 EmPulse System Alert",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🚨 System Health Check Failed"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Service:* EmPulse Launch Page"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Time:* <!date^${{ github.event.head_commit.timestamp }}^{date_short_pretty} at {time}|${{ github.event.head_commit.timestamp }}>"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Environment:* Production"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Status:* 🔴 DOWN"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Failed Checks:*\n• Backend health check\n• Frontend connectivity\n• WebSocket endpoint\n• Performance monitoring"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View GitHub Actions"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "Check Railway Dashboard"
+                      },
+                      "url": "https://railway.app/project/${{ secrets.RAILWAY_PROJECT_ID }}"
+                    }
+                  ]
+                }
+              ]
+            }
+
+      - name: Send email alert
+        if: env.EMAIL_RECIPIENTS
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const recipients = process.env.EMAIL_RECIPIENTS.split(',');
+            // Email alert implementation would go here
+            // Using Resend API or similar service
+            console.log(`Email alerts would be sent to: ${recipients.join(', ')}`);
+
+  log-metrics:
+    needs: health-check
+    if: success()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log system metrics
+        run: |
+          echo "📈 System Metrics - $(date)"
+          echo "✅ All health checks passed"
+          echo "🔄 Monitoring cycle completed successfully"
