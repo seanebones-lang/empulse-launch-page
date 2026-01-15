@@ -6,6 +6,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   href?: string;
+  download?: string;
   className?: string;
 }
 
@@ -14,6 +15,7 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   href,
+  download,
   className = '',
   ...props
 }: ButtonProps) {
@@ -34,6 +36,15 @@ export default function Button({
   const classes = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
 
   if (href) {
+    // Use regular anchor tag for downloads
+    if (download) {
+      return (
+        <a href={href} download={download} className={classes}>
+          {children}
+        </a>
+      );
+    }
+    // Use Next.js Link for internal navigation
     return (
       <Link href={href} className={classes}>
         {children}
