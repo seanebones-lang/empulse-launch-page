@@ -37,8 +37,11 @@ export default function PulseChatbot() {
   useEffect(() => {
     if (isOpen && !voiceEnabled && !isConnecting && !xaiVoiceClientRef.current) {
       console.log('[Pulse] Chat opened, auto-enabling voice...');
-      enableVoice();
+      enableVoice().catch(err => {
+        console.error('[Pulse] Failed to auto-enable voice:', err);
+      });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   // Cleanup on unmount
