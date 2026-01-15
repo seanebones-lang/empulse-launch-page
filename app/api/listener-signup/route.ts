@@ -3,16 +3,16 @@ import { Resend } from 'resend';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
-// Get recipient email for artist signups
-const getArtistRecipientEmail = (): string => {
-  return process.env.ARTIST_EMAIL || process.env.GENERAL_EMAIL || 'empulse@mothership-ai.com';
+// Get recipient email for listener signups
+const getListenerRecipientEmail = (): string => {
+  return process.env.LISTENER_EMAIL || process.env.GENERAL_EMAIL || 'empulse@mothership-ai.com';
 };
 
 export async function POST(request: NextRequest) {
   try {
-    const { artistName, yourName, email, musicLink, betaAccess } = await request.json();
+    const { email, betaTester, alsoArtist } = await request.json();
 
-    // Validate required fields
+    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email)) {
       return NextResponse.json(
@@ -21,14 +21,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!artistName || !yourName) {
-      return NextResponse.json(
-        { error: 'Artist name and your name are required' },
-        { status: 400 }
-      );
-    }
-
-    const recipientEmail = getArtistRecipientEmail();
+    const recipientEmail = getListenerRecipientEmail();
 
     // Send notification email
     if (resend) {
@@ -36,23 +29,20 @@ export async function POST(request: NextRequest) {
         await resend.emails.send({
           from: 'EmPulse <noreply@mothership-ai.com>',
           to: recipientEmail,
-          subject: `New Artist Signup: ${artistName}`,
+          subject: `New Listener Signup: ${email}`,
           html: `
-            <h2>New Artist Signup</h2>
-            <p><strong>Artist/Band Name:</strong> ${artistName}</p>
-            <p><strong>Contact Name:</strong> ${yourName}</p>
+            <h2>New Listener Signup</h2>
             <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-            ${musicLink ? `<p><strong>Music Link:</strong> <a href="${musicLink}" target="_blank">${musicLink}</a></p>` : '<p><strong>Music Link:</strong> Not provided</p>'}
-            <p><strong>Beta Access Requested:</strong> ${betaAccess ? 'Yes' : 'No'}</p>
+            <p><strong>Wants to Beta Test:</strong> ${betaTester ? 'Yes' : 'No'}</p>
+            <p><strong>Also an Artist:</strong> ${alsoArtist ? 'Yes' : 'No'}</p>
             <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
             <hr>
             <p><small>This is an automated notification from the EmPulse website.</small></p>
           `,
         });
-        console.log(`Artist signup email sent to ${recipientEmail}: ${artistName} (${email})`);
+        console.log(`Listener signup email sent to ${recipientEmail}: ${email}`);
       } catch (emailError) {
-        console.error('Failed to send artist signup email:', emailError);
-        // Continue - we'll still log it
+        console.error('Failed to send listener signup email:', emailError);
       }
     }
 
@@ -65,19 +55,18 @@ export async function POST(request: NextRequest) {
         });
       } catch (resendError) {
         console.error('Resend audience error:', resendError);
-        // Continue even if audience add fails
       }
     }
 
-    // Log for manual processing
-    console.log('New artist signup:', { artistName, yourName, email, musicLink, betaAccess });
+    // Log signup
+    console.log('New listener signup:', { email, betaTester, alsoArtist });
 
     return NextResponse.json(
       { success: true, message: 'Signup successful' },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Artist signup error:', error);
+    console.error('Listener signup error:', error);
     return NextResponse.json(
       { error: 'Signup failed' },
       { status: 500 }
