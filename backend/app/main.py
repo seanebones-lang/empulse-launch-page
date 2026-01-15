@@ -78,7 +78,7 @@ async def xai_voice_proxy(websocket: WebSocket):
         # Wait for client to send ephemeral token
         try:
             init_message = await asyncio.wait_for(websocket.receive_json(), timeout=10.0)
-            if init_message.type === 'auth' and init_message.token:
+            if init_message.get('type') == 'auth' and init_message.get('token'):
                 ephemeral_token = init_message.token
                 print("[xAI Voice Proxy] Received ephemeral token")
             else:
