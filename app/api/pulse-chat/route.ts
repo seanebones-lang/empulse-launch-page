@@ -16,11 +16,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Forward to Railway backend API
+    // Forward to Railway backend API with Origin header for Pulse detection
+    const origin = request.headers.get('origin') || request.headers.get('referer') || 'https://empulse.mothership-ai.com';
     const backendResponse = await fetch(`${BACKEND_URL}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Origin': origin,
+        'Referer': origin,
       },
       body: JSON.stringify({ message }),
     });
