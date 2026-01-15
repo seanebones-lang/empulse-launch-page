@@ -1,7 +1,7 @@
 /**
  * xAI Voice Agent Client
  * Handles WebSocket connection to xAI Voice API via backend proxy
- * Streams text responses and audio (Eve voice)
+ * Streams text responses and audio (Ara voice)
  */
 
 export interface XAIVoiceConfig {

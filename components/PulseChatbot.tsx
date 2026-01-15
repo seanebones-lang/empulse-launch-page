@@ -54,7 +54,7 @@ export default function PulseChatbot() {
       const client = new XAIVoiceClient(
         backendUrl,
         {
-          voice: 'Eve',
+          voice: 'Ara',
           instructions: "You are Pulse, EmPulse Music's AI assistant. You're a Chicago, Illinois music expert, Blues Brothers superfan, and deeply knowledgeable about EmPulse's mission to pay artists fairly ($0.004-$0.006 per stream) and integrate mental wellness features. EmPulse is based in Chicago and serves the music community here. Be friendly, concise, and helpful.",
           sampleRate: 24000,
         },
