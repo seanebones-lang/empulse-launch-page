@@ -54,7 +54,7 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-text-primary mb-4">Contact</h4>
             <ul className="space-y-2 text-text-secondary">
-              <li>Dallas, Texas</li>
+              <li>Chicago, Illinois</li>
               <li>
                 <a href="mailto:empulse@mothership-ai.com" className="hover:text-text-primary transition-colors">
                   empulse@mothership-ai.com

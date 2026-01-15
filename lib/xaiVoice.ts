@@ -24,6 +24,7 @@ export class XAIVoiceClient {
   private audioChunks: string[] = [];
   private textBuffer: string = '';
   private backendUrl: string;
+  private ephemeralToken: string | null = null;
 
   constructor(
     backendUrl: string,
@@ -36,16 +37,33 @@ export class XAIVoiceClient {
   }
 
   async connect(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
+        // First, get ephemeral token for secure client authentication
+        await this.fetchEphemeralToken();
+
         // Connect to backend WebSocket proxy
         const wsUrl = this.backendUrl.replace('http://', 'ws://').replace('https://', 'wss://');
         this.ws = new WebSocket(`${wsUrl}/ws/xai-voice`);
 
-        this.ws.onopen = () => {
+        this.ws.onopen = async () => {
           console.log('[xAI Voice] WebSocket connected');
-          this.configureSession();
-          resolve();
+
+          // Send authentication message with ephemeral token
+          if (this.ephemeralToken) {
+            this.ws!.send(JSON.stringify({
+              type: 'auth',
+              token: this.ephemeralToken
+            }));
+
+            // Wait a moment for auth to be processed, then configure session
+            setTimeout(() => {
+              this.configureSession();
+              resolve();
+            }, 100);
+          } else {
+            reject(new Error('No ephemeral token available'));
+          }
         };
 
         this.ws.onmessage = (event) => {
@@ -67,13 +85,40 @@ export class XAIVoiceClient {
     });
   }
 
+  private async fetchEphemeralToken(): Promise<void> {
+    try {
+      const response = await fetch(`${this.backendUrl}/session`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to get ephemeral token: ${response.status}`);
+      }
+
+      const data = await response.json();
+      this.ephemeralToken = data.token || data.access_token || data;
+
+      if (!this.ephemeralToken) {
+        throw new Error('No token received from ephemeral token endpoint');
+      }
+
+      console.log('[xAI Voice] Ephemeral token acquired');
+    } catch (error) {
+      console.error('[xAI Voice] Failed to get ephemeral token:', error);
+      throw error;
+    }
+  }
+
   private configureSession() {
     const sessionConfig = {
       type: 'session.update',
       session: {
         voice: this.config.voice,
         instructions: this.config.instructions,
-        turn_detection: { type: null },
+        turn_detection: { type: 'server_vad' }, // Enable automatic speech detection
         audio: {
           input: {
             format: {
@@ -88,11 +133,21 @@ export class XAIVoiceClient {
             },
           },
         },
+        // Add tools for enhanced functionality
+        tools: [
+          {
+            type: 'web_search', // Enable web search capability
+          },
+          {
+            type: 'x_search', // Enable X (Twitter) search
+            allowed_x_handles: ['elonmusk', 'xai'],
+          },
+        ],
       },
     };
 
     this.send(sessionConfig);
-    console.log('[xAI Voice] Session configured');
+    console.log('[xAI Voice] Session configured with server VAD and tools');
   }
 
   async sendTextMessage(text: string): Promise<void> {
@@ -129,12 +184,30 @@ export class XAIVoiceClient {
       const event = JSON.parse(data);
 
       switch (event.type) {
-        case 'session.created':
-          console.log('[xAI Voice] Session created');
+        case 'conversation.created':
+          console.log('[xAI Voice] Conversation created');
           break;
 
         case 'session.updated':
           console.log('[xAI Voice] Session updated');
+          break;
+
+        case 'input_audio_buffer.speech_started':
+          console.log('[xAI Voice] Speech started');
+          break;
+
+        case 'input_audio_buffer.speech_stopped':
+          console.log('[xAI Voice] Speech stopped');
+          break;
+
+        case 'conversation.item.input_audio_transcription.completed':
+          console.log('[xAI Voice] Audio transcription completed:', event.transcript);
+          break;
+
+        case 'response.created':
+          console.log('[xAI Voice] Response started');
+          this.audioChunks = []; // Reset audio chunks for new response
+          this.textBuffer = '';
           break;
 
         case 'response.output_audio_transcript.delta':
@@ -168,7 +241,8 @@ export class XAIVoiceClient {
           break;
 
         default:
-          // Ignore other event types
+          // Log other events for debugging
+          console.log('[xAI Voice] Unhandled event:', event.type);
           break;
       }
     } catch (error) {

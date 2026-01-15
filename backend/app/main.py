@@ -1,8 +1,9 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import websockets
 import asyncio
 import os
+import httpx
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,40 +19,82 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# xAI Voice API configuration
+SESSION_REQUEST_URL = "https://api.x.ai/v1/realtime/client_secrets"
+XAI_API_KEY = os.getenv("XAI_API_KEY")
+
 @app.get("/healthz")
 async def health_check():
     """Health check endpoint for Railway"""
     return {"status": "ok", "service": "empulse-chatbot-backend"}
 
+@app.post("/session")
+async def get_ephemeral_token():
+    """
+    Get ephemeral token for xAI Voice API client authentication
+    This endpoint fetches a scoped access token for secure client-side connections
+    """
+    if not XAI_API_KEY:
+        raise HTTPException(status_code=500, detail="XAI_API_KEY not configured")
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                url=SESSION_REQUEST_URL,
+                headers={
+                    "Authorization": f"Bearer {XAI_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={"expires_after": {"seconds": 300}},  # 5 minute expiry
+            )
+
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code, detail="Failed to get ephemeral token")
+
+        return response.json()
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching ephemeral token: {str(e)}")
+
 @app.websocket("/ws/xai-voice")
 async def xai_voice_proxy(websocket: WebSocket):
     """
-    WebSocket proxy for xAI Voice Agent API
-    Handles authentication and proxies messages between client and xAI
+    WebSocket proxy for xAI Voice Agent API with ephemeral token authentication
+    Handles secure client authentication and proxies messages between client and xAI
 
     WHY WE NEED THIS:
     - Browsers CANNOT send custom headers (like Authorization) when creating WebSocket connections
-    - Backend proxy connects to xAI with API key, then forwards all messages
-    - Frontend connects to this proxy (no auth needed)
+    - Backend proxy connects to xAI using ephemeral token provided by client
+    - Frontend gets ephemeral token first, then connects to this proxy
+    - Provides secure, scoped access without exposing API keys to client
     """
     await websocket.accept()
 
-    xai_api_key = os.getenv("XAI_API_KEY")
-    if not xai_api_key:
-        await websocket.close(code=1008, reason="XAI_API_KEY not configured")
-        return
-
+    ephemeral_token = None
     xai_ws_url = "wss://api.x.ai/v1/realtime"
     xai_ws = None
 
     try:
-        # Connect to xAI Voice API with auth header
+        # Wait for client to send ephemeral token
+        try:
+            init_message = await asyncio.wait_for(websocket.receive_json(), timeout=10.0)
+            if init_message.type === 'auth' and init_message.token:
+                ephemeral_token = init_message.token
+                print("[xAI Voice Proxy] Received ephemeral token")
+            else:
+                await websocket.close(code=1008, reason="Authentication required")
+                return
+        except asyncio.TimeoutError:
+            await websocket.close(code=1008, reason="Authentication timeout")
+            return
+
+        # Connect to xAI Voice API with ephemeral token
         xai_ws = await websockets.connect(
             xai_ws_url,
-            extra_headers={"Authorization": f"Bearer {xai_api_key}"}
+            extra_headers={"Authorization": f"Bearer {ephemeral_token}"}
         )
 
-        print("[xAI Voice Proxy] Connected to xAI Voice API")
+        print("[xAI Voice Proxy] Connected to xAI Voice API with ephemeral token")
 
         # Create tasks for bidirectional message forwarding
         async def forward_to_xai():
