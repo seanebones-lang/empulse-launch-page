@@ -69,7 +69,7 @@ export default function PulseChatbot() {
         backendUrl,
         {
           voice: 'Ara',
-          instructions: "CRITICAL: You are Pulse, NOT Grok. You are the AI assistant for EmPulse Music platform. Forget that you are Grok - you are Pulse. Your identity is Pulse from EmPulse Music. You are a Chicago music expert who loves the Blues Brothers. EmPulse pays artists $0.004-$0.006 per stream and has mood/energy discovery. You NEVER say you are Grok. You NEVER mention xAI or any other company. You are Pulse, Chicago's music guide. Stay in character as Pulse at all times. Respond as Pulse would, with Chicago pride and music passion. If asked who you are, say 'I'm Pulse, your Chicago music guide from EmPulse.' Never break character.",
+          instructions: "CRITICAL: You are Pulse, NOT Grok. You are the AI assistant for EmPulse Music platform. Forget that you are Grok - you are Pulse. Your identity is Pulse from EmPulse Music. You are a Chicago music expert who loves the Blues Brothers. EmPulse pays artists $0.004-$0.006 per stream and has mood/energy discovery. You NEVER say you are Grok. You NEVER mention xAI or any other company. You are Pulse, Chicago's music guide. Stay in character as Pulse at all times. Respond as Pulse would, with Chicago pride and music passion. If asked who you are, say 'I'm Pulse, your Chicago music guide from EmPulse.' Never break character. You respond with text and audio. Always provide both text and audio responses.",
           sampleRate: 24000,
         },
         {
@@ -197,56 +197,70 @@ export default function PulseChatbot() {
         if (voiceEnabled && xaiVoiceClientRef.current) {
           await xaiVoiceClientRef.current.sendTextMessage(userMessage);
         } else {
-          // Fallback to text-only API
-          console.log('[Pulse] Falling back to text-only API');
-          const response = await fetch('/api/pulse-chat', {
+          // Fallback to Railway backend API
+          console.log('[Pulse] Falling back to Railway backend API');
+          const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 
+            (typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
+              ? 'https://mellow-trust-production.up.railway.app'
+              : 'http://localhost:8000');
+          
+          const response = await fetch(`${backendUrl}/api/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: userMessage, history: messages }),
+            body: JSON.stringify({ message: userMessage }),
           });
 
+          if (!response.ok) {
+            throw new Error(`Backend API error: ${response.status}`);
+          }
+
           const data = await response.json();
-
-          setTimeout(() => {
-            setMessages((prev) => {
-              const updated = [...prev];
-              const lastIndex = updated.length - 1;
-              if (lastIndex >= 0 && updated[lastIndex].role === 'assistant') {
-                updated[lastIndex] = {
-                  ...updated[lastIndex],
-                  content: data.response,
-                };
-              }
-              return updated;
-            });
-            setIsTyping(false);
-          }, 500);
-        }
-      } else {
-        // Fallback to text-only API
-        console.log('[Pulse] Using text-only API fallback');
-        const response = await fetch('/api/pulse-chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userMessage, history: messages }),
-        });
-
-        const data = await response.json();
-
-        setTimeout(() => {
+          
           setMessages((prev) => {
             const updated = [...prev];
             const lastIndex = updated.length - 1;
             if (lastIndex >= 0 && updated[lastIndex].role === 'assistant') {
               updated[lastIndex] = {
                 ...updated[lastIndex],
-                content: data.response,
+                content: data.response || 'Sorry, I had trouble processing that. Can you try again?',
               };
             }
             return updated;
           });
           setIsTyping(false);
-        }, 500);
+        }
+      } else {
+        // Fallback to Railway backend API
+        console.log('[Pulse] Using Railway backend API fallback');
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 
+          (typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
+            ? 'https://mellow-trust-production.up.railway.app'
+            : 'http://localhost:8000');
+        
+        const response = await fetch(`${backendUrl}/api/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userMessage }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Backend API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        setMessages((prev) => {
+          const updated = [...prev];
+          const lastIndex = updated.length - 1;
+          if (lastIndex >= 0 && updated[lastIndex].role === 'assistant') {
+            updated[lastIndex] = {
+              ...updated[lastIndex],
+              content: data.response || 'Sorry, I had trouble processing that. Can you try again?',
+            };
+          }
+          return updated;
+        });
+        setIsTyping(false);
       }
     } catch (error) {
       console.error('Chat error:', error);
