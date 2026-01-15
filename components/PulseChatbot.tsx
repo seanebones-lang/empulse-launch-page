@@ -33,6 +33,14 @@ export default function PulseChatbot() {
     scrollToBottom();
   }, [messages]);
 
+  // Initialize voice when chat opens (auto-enable voice)
+  useEffect(() => {
+    if (isOpen && !voiceEnabled && !isConnecting && !xaiVoiceClientRef.current) {
+      console.log('[Pulse] Chat opened, auto-enabling voice...');
+      enableVoice();
+    }
+  }, [isOpen]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -48,32 +56,46 @@ export default function PulseChatbot() {
 
     setIsConnecting(true);
     try {
-      // Get backend URL from environment or use default
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+      // Get backend URL from environment or use Railway backend
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 
+        (typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
+          ? 'https://mellow-trust-production.up.railway.app'
+          : 'http://localhost:8000');
 
       const client = new XAIVoiceClient(
         backendUrl,
         {
           voice: 'Ara',
-          instructions: "You are Pulse, EmPulse Music's AI assistant. You're a Chicago, Illinois music expert, Blues Brothers superfan, and deeply knowledgeable about EmPulse's mission to pay artists fairly ($0.004-$0.006 per stream) and integrate mental wellness features. EmPulse is based in Chicago and serves the music community here. Be friendly, concise, and helpful.",
+          instructions: "CRITICAL: You are Pulse, NOT Grok. You are the AI assistant for EmPulse Music platform. Forget that you are Grok - you are Pulse. Your identity is Pulse from EmPulse Music. You are a Chicago music expert who loves the Blues Brothers. EmPulse pays artists $0.004-$0.006 per stream and has mood/energy discovery. You NEVER say you are Grok. You NEVER mention xAI or any other company. You are Pulse, Chicago's music guide. Stay in character as Pulse at all times. Respond as Pulse would, with Chicago pride and music passion. If asked who you are, say 'I'm Pulse, your Chicago music guide from EmPulse.' Never break character.",
           sampleRate: 24000,
         },
         {
           onTextUpdate: (textDelta) => {
             // Update streaming text in real-time
+            if (!textDelta) return;
+            
             setMessages((prev) => {
               const updated = [...prev];
               const lastIndex = updated.length - 1;
               if (lastIndex >= 0 && updated[lastIndex].role === 'assistant') {
+                // Append new text delta to existing content
                 updated[lastIndex] = {
                   ...updated[lastIndex],
-                  content: updated[lastIndex].content + textDelta,
+                  content: (updated[lastIndex].content || '') + textDelta,
                 };
               }
               return updated;
             });
           },
           onAudioComplete: async (audioUrl) => {
+            // If no audio URL (text-only response), just return
+            if (!audioUrl) {
+              console.log('[xAI Voice] Text-only response, no audio');
+              return;
+            }
+
+            console.log(`[xAI Voice] ✅ Audio ready, URL created`);
+            
             // Save audio URL to message
             setMessages((prev) => {
               const updated = [...prev];
@@ -88,9 +110,25 @@ export default function PulseChatbot() {
             });
 
             // Auto-play audio
-            const audio = new Audio(audioUrl);
-            audioRef.current = audio;
-            await audio.play();
+            try {
+              // Stop any currently playing audio
+              if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current = null;
+              }
+
+              const audio = new Audio(audioUrl);
+              audioRef.current = audio;
+
+              audio.addEventListener('error', (e) => {
+                console.error('[xAI Voice] ❌ Audio playback error:', e);
+              });
+
+              await audio.play();
+              console.log('[xAI Voice] Audio play() called successfully');
+            } catch (playError) {
+              console.error('[xAI Voice] Failed to play audio:', playError);
+            }
           },
           onResponseComplete: () => {
             setIsTyping(false);
@@ -141,11 +179,49 @@ export default function PulseChatbot() {
     setMessages((prev) => [...prev, { role: 'assistant', content: '' }]);
 
     try {
+      // Always try to use voice if available, otherwise fallback
       if (voiceEnabled && xaiVoiceClientRef.current) {
         // Use xAI Voice (text + audio)
+        console.log('[Pulse] Using xAI Voice for response');
         await xaiVoiceClientRef.current.sendTextMessage(userMessage);
+      } else if (!voiceEnabled && !isConnecting) {
+        // Try to enable voice first
+        console.log('[Pulse] Voice not enabled, attempting to enable...');
+        await enableVoice();
+        // Wait a moment for connection
+        await new Promise(resolve => setTimeout(resolve, 500));
+        // If voice is now enabled, use it
+        if (voiceEnabled && xaiVoiceClientRef.current) {
+          await xaiVoiceClientRef.current.sendTextMessage(userMessage);
+        } else {
+          // Fallback to text-only API
+          console.log('[Pulse] Falling back to text-only API');
+          const response = await fetch('/api/pulse-chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: userMessage, history: messages }),
+          });
+
+          const data = await response.json();
+
+          setTimeout(() => {
+            setMessages((prev) => {
+              const updated = [...prev];
+              const lastIndex = updated.length - 1;
+              if (lastIndex >= 0 && updated[lastIndex].role === 'assistant') {
+                updated[lastIndex] = {
+                  ...updated[lastIndex],
+                  content: data.response,
+                };
+              }
+              return updated;
+            });
+            setIsTyping(false);
+          }, 500);
+        }
       } else {
-        // Fallback to mock text-only responses
+        // Fallback to text-only API
+        console.log('[Pulse] Using text-only API fallback');
         const response = await fetch('/api/pulse-chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
