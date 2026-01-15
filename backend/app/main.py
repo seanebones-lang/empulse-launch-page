@@ -46,9 +46,10 @@ async def xai_voice_proxy(websocket: WebSocket):
 
     try:
         # Connect to xAI Voice API with auth header
+        # websockets library uses extra_headers parameter (not additional_headers)
         xai_ws = await websockets.connect(
             xai_ws_url,
-            additional_headers={"Authorization": f"Bearer {xai_api_key}"}
+            extra_headers={"Authorization": f"Bearer {xai_api_key}"}
         )
 
         print("[xAI Voice Proxy] Connected to xAI Voice API")
