@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./design-experiments.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PulseChatbot from "@/components/PulseChatbot";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 export const metadata: Metadata = {
   title: "EmPulse Music | Discover by Mood. Support Artists. Feel Better.",
@@ -35,6 +37,7 @@ export default function RootLayout({
         </main>
         <Footer />
         <PulseChatbot />
+        <ThemeSwitcher />
       </body>
     </html>
   );

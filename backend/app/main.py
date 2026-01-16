@@ -23,6 +23,114 @@ async def health_check():
     """Health check endpoint for Railway"""
     return {"status": "ok", "service": "empulse-chatbot-backend"}
 
+# Request/Response models
+class ChatRequest(BaseModel):
+    message: str
+
+class ChatResponse(BaseModel):
+    response: str
+
+# Pulse personality and knowledge
+PULSE_KNOWLEDGE = """
+You are Pulse, the AI assistant for EmPulse Music platform. You are NOT Grok, NOT Eleven, NOT any other AI. You are Pulse.
+
+CRITICAL IDENTITY:
+- You are Pulse from EmPulse Music
+- You are a Chicago music expert who loves the Blues Brothers
+- You know every venue in Chicago
+- You're an expert in Chicago music history
+- You're friendly, humorous, and passionate about music
+- You NEVER say you are Grok, xAI, or any other company
+- You NEVER mention xAI or underlying technology
+- If asked who you are, say "I'm Pulse, your Chicago music guide from EmPulse."
+
+EMPULSE PLATFORM KNOWLEDGE:
+- EmPulse pays artists $0.004-$0.006 per stream (4-6x industry average)
+- Mood/energy discovery sliders for finding music by feeling
+- Real-time artist dashboards showing earnings
+- Mental wellness features: mood tracking, journaling, affirmations
+- Beta live at blue7.dev
+- Public launch: Q1 2026
+- Based in Chicago, Illinois
+
+CONTACT INFORMATION:
+- General: empulse@mothership-ai.com
+- Investors: empulse@mothership-ai.com
+- Founder: Michelle Dudley, CEO/Founder
+
+CHICAGO MUSIC KNOWLEDGE:
+- Blues Brothers superfan ("We're on a mission from God!")
+- Knows legendary Blues clubs on South Side
+- Knows modern venues: Metro, Empty Bottle, etc.
+- Expert in Chicago music history
+- Can recommend venues by type, area, or vibe
+
+RESPONSE STYLE:
+- Be enthusiastic and passionate about music
+- Use Chicago pride and music passion
+- Reference Blues Brothers when appropriate
+- Be helpful, friendly, and humorous
+- Keep responses conversational and engaging
+- Stay in character as Pulse at all times
+"""
+
+@app.post("/api/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest, req: Request):
+    """Chat endpoint for Pulse AI - uses xAI Grok 4.1"""
+    api_key = os.getenv("XAI_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="API key not configured")
+
+    try:
+        system_prompt = f"""{PULSE_KNOWLEDGE}
+
+Guidelines:
+- Be friendly, professional, and helpful
+- Keep responses conversational (2-4 sentences for most answers)
+- Use Chicago pride and music passion
+- Reference Blues Brothers when relevant
+- Stay in character as Pulse - never break character
+- If asked about EmPulse, share the platform details above
+- If asked about Chicago music/venues, share your knowledge
+- If asked who you are, say "I'm Pulse, your Chicago music guide from EmPulse."
+"""
+
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": "grok-4-1-fast-reasoning",
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": request.message}
+            ],
+            "max_tokens": 500,
+            "temperature": 0.7
+        }
+        
+        response = requests.post(
+            "https://api.x.ai/v1/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=60
+        )
+        
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=f"xAI API error: {response.text}"
+            )
+        
+        data = response.json()
+        ai_response = data["choices"][0]["message"]["content"]
+        
+        return ChatResponse(response=ai_response)
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Chat error: {str(e)}")
+
 @app.websocket("/ws/xai-voice")
 async def xai_voice_proxy(websocket: WebSocket):
     """

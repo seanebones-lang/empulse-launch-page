@@ -39,8 +39,22 @@ export class XAIVoiceClient {
     return new Promise((resolve, reject) => {
       try {
         // Connect to backend WebSocket proxy
-        const wsUrl = this.backendUrl.replace('http://', 'ws://').replace('https://', 'wss://');
-        this.ws = new WebSocket(`${wsUrl}/ws/xai-voice`);
+        // Properly construct WebSocket URL from backend URL
+        let wsUrl: string;
+        try {
+          const url = new URL(this.backendUrl);
+          const wsProtocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
+          wsUrl = `${wsProtocol}//${url.host}/ws/xai-voice`;
+          console.log('[xAI Voice] Using backend proxy:', wsUrl);
+        } catch (e) {
+          // Fallback if URL parsing fails
+          console.error('[xAI Voice] Failed to parse backend URL:', e);
+          const wsProtocol = this.backendUrl.startsWith('https') ? 'wss:' : 'ws:';
+          wsUrl = this.backendUrl.replace('http://', 'ws://').replace('https://', 'wss://') + '/ws/xai-voice';
+          console.log('[xAI Voice] Using fallback proxy URL:', wsUrl);
+        }
+        
+        this.ws = new WebSocket(wsUrl);
 
         this.ws.onopen = () => {
           console.log('[xAI Voice] WebSocket connected');
@@ -48,8 +62,8 @@ export class XAIVoiceClient {
           resolve();
         };
 
-        this.ws.onmessage = (event) => {
-          this.handleMessage(event.data);
+        this.ws.onmessage = async (event) => {
+          await this.handleMessage(event.data);
         };
 
         this.ws.onerror = (error) => {
@@ -88,30 +102,24 @@ export class XAIVoiceClient {
             },
           },
         },
-        // Add tools for enhanced functionality
-        tools: [
-          {
-            type: 'web_search', // Enable web search capability
-          },
-          {
-            type: 'x_search', // Enable X (Twitter) search
-            allowed_x_handles: ['elonmusk', 'xai'],
-          },
-        ],
       },
     };
 
+    console.log('[xAI Voice] Sending session config:', JSON.stringify(sessionConfig, null, 2));
     this.send(sessionConfig);
-    console.log('[xAI Voice] Session configured with server VAD and tools');
   }
 
   async sendTextMessage(text: string): Promise<void> {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      throw new Error('WebSocket not connected');
+    }
+
     // Reset buffers for new message
     this.audioChunks = [];
     this.textBuffer = '';
 
-    // Send user message
-    this.send({
+    // Step 1: Send user message (per xAI Voice Agent API docs)
+    const message = {
       type: 'conversation.item.create',
       item: {
         type: 'message',
@@ -119,85 +127,98 @@ export class XAIVoiceClient {
         content: [
           {
             type: 'input_text',
-            text,
+            text: text,
           },
         ],
       },
-    });
+    };
 
-    // Request response with text and audio
-    this.send({
+    console.log('[xAI Voice] Sending text message:', text.substring(0, 50));
+    this.send(message);
+
+    // Step 2: Request response with text and audio (per docs)
+    const responseRequest = {
       type: 'response.create',
       response: {
         modalities: ['text', 'audio'],
       },
-    });
+    };
+
+    console.log('[xAI Voice] Requesting response with text and audio');
+    this.send(responseRequest);
   }
 
-  private handleMessage(data: string) {
+  private async handleMessage(data: string) {
     try {
       const event = JSON.parse(data);
+      console.log('[xAI Voice] Received event:', event.type);
 
       switch (event.type) {
-        case 'conversation.created':
-          console.log('[xAI Voice] Conversation created');
-          break;
-
         case 'session.updated':
-          console.log('[xAI Voice] Session updated');
+          console.log('[xAI Voice] ✅ Session configured successfully');
           break;
 
-        case 'input_audio_buffer.speech_started':
-          console.log('[xAI Voice] Speech started');
+        case 'conversation.created':
+          console.log('[xAI Voice] ✅ Conversation created');
           break;
 
-        case 'input_audio_buffer.speech_stopped':
-          console.log('[xAI Voice] Speech stopped');
-          break;
-
-        case 'conversation.item.input_audio_transcription.completed':
-          console.log('[xAI Voice] Audio transcription completed:', event.transcript);
+        case 'conversation.item.added':
+          console.log('[xAI Voice] Message added to conversation');
           break;
 
         case 'response.created':
-          console.log('[xAI Voice] Response started');
+          console.log('[xAI Voice] Response started, ID:', event.response?.id);
           this.audioChunks = []; // Reset audio chunks for new response
           this.textBuffer = '';
           break;
 
+        case 'response.output_item.added':
+          console.log('[xAI Voice] Response item added');
+          break;
+
         case 'response.output_audio_transcript.delta':
-          // Streaming text response
           const textDelta = event.delta || '';
-          this.textBuffer += textDelta;
-          this.callbacks.onTextUpdate?.(textDelta);
+          if (textDelta) {
+            this.textBuffer += textDelta;
+            console.log('[xAI Voice] Text delta:', textDelta);
+            this.callbacks.onTextUpdate?.(textDelta);
+          }
+          break;
+
+        case 'response.output_audio_transcript.done':
+          console.log('[xAI Voice] Text transcript complete');
           break;
 
         case 'response.output_audio.delta':
-          // Streaming audio chunks (base64 PCM16)
-          if (event.delta) {
-            this.audioChunks.push(event.delta);
+          const audioDelta = event.delta || '';
+          if (audioDelta) {
+            this.audioChunks.push(audioDelta);
           }
           break;
 
         case 'response.output_audio.done':
-          // Audio streaming complete - decode and play
-          this.processAudioChunks();
+          console.log('[xAI Voice] Audio complete, total chunks:', this.audioChunks.length);
+          if (this.audioChunks.length > 0) {
+            await this.processAudioChunks();
+          } else {
+            console.warn('[xAI Voice] No audio chunks received');
+            // No audio, but response is done - notify completion
+            this.callbacks.onResponseComplete?.();
+          }
           break;
 
         case 'response.done':
-          // Entire response complete
-          console.log('[xAI Voice] Response complete');
+          console.log('[xAI Voice] ✅ Response complete');
+          // ALWAYS notify response is complete to stop loading state
+          // This ensures loading stops even if audio processing hasn't finished
           this.callbacks.onResponseComplete?.();
           break;
 
-        case 'error':
-          console.error('[xAI Voice] Error event:', event.error);
-          this.callbacks.onError?.(new Error(event.error?.message || 'Unknown error'));
-          break;
-
         default:
-          // Log other events for debugging
-          console.log('[xAI Voice] Unhandled event:', event.type);
+          // Log unknown message types for debugging (but ignore input_audio_buffer events)
+          if (event.type && !event.type.includes('input_audio_buffer')) {
+            console.log('[xAI Voice] Unhandled event type:', event.type);
+          }
           break;
       }
     } catch (error) {
@@ -206,20 +227,28 @@ export class XAIVoiceClient {
   }
 
   private async processAudioChunks() {
-    if (this.audioChunks.length === 0) return;
+    if (this.audioChunks.length === 0) {
+      console.warn('[xAI Voice] No audio chunks to process');
+      // No audio, but response is done - notify completion
+      this.callbacks.onResponseComplete?.();
+      return;
+    }
 
     try {
       // Combine all base64 chunks
       const combinedBase64 = this.audioChunks.join('');
+      console.log('[xAI Voice] Processing audio, total length:', combinedBase64.length);
 
       // Decode base64 to PCM16 audio
       const audioBuffer = await this.decodePCM16Audio(combinedBase64);
+      console.log('[xAI Voice] Decoded audio buffer, duration:', audioBuffer.duration, 'seconds');
 
-      // Convert to WAV blob
-      const audioBlob = this.audioBufferToBlob(audioBuffer);
+      // Convert to WAV blob (now async)
+      const audioBlob = await this.audioBufferToBlob(audioBuffer);
 
       // Create URL for playback
       const audioUrl = URL.createObjectURL(audioBlob);
+      console.log('[xAI Voice] Created audio URL for playback');
 
       this.callbacks.onAudioComplete?.(audioUrl);
     } catch (error) {
@@ -236,25 +265,44 @@ export class XAIVoiceClient {
       bytes[i] = binaryString.charCodeAt(i);
     }
 
-    // Convert PCM16 (16-bit signed) to Float32 for Web Audio API
-    const pcm16 = new Int16Array(bytes.buffer);
-    const float32 = new Float32Array(pcm16.length);
-    for (let i = 0; i < pcm16.length; i++) {
-      float32[i] = pcm16[i] / 32768.0; // Convert to -1.0 to 1.0 range
+    // Convert to Int16Array (PCM16, little-endian)
+    const samples = new Int16Array(bytes.buffer);
+
+    // Convert to Float32Array (normalized to -1 to 1)
+    const floatSamples = new Float32Array(samples.length);
+    for (let i = 0; i < samples.length; i++) {
+      floatSamples[i] = samples[i] / 32768.0;
     }
 
-    // Create AudioBuffer
-    const audioContext = new AudioContext({ sampleRate: this.config.sampleRate });
-    const audioBuffer = audioContext.createBuffer(1, float32.length, this.config.sampleRate);
-    audioBuffer.copyToChannel(float32, 0);
+    // Create AudioBuffer - use getChannelData().set() for better browser compatibility
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioBuffer = audioContext.createBuffer(1, floatSamples.length, this.config.sampleRate);
+    audioBuffer.getChannelData(0).set(floatSamples);
 
     return audioBuffer;
   }
 
-  private audioBufferToBlob(audioBuffer: AudioBuffer): Blob {
-    // Convert AudioBuffer to WAV blob
-    const wav = this.audioBufferToWav(audioBuffer);
-    return new Blob([wav], { type: 'audio/wav' });
+  private audioBufferToBlob(audioBuffer: AudioBuffer): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const offlineContext = new OfflineAudioContext(
+        audioBuffer.numberOfChannels,
+        audioBuffer.length,
+        audioBuffer.sampleRate
+      );
+
+      const source = offlineContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(offlineContext.destination);
+      source.start();
+
+      offlineContext.startRendering().then((renderedBuffer) => {
+        // Convert to WAV
+        const wav = this.audioBufferToWav(renderedBuffer);
+        const blob = new Blob([wav], { type: 'audio/wav' });
+        resolve(blob);
+      }).catch(reject);
+    });
   }
 
   private audioBufferToWav(audioBuffer: AudioBuffer): ArrayBuffer {

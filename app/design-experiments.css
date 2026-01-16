@@ -1,0 +1,173 @@
+/* EmPulse Design Experiments - January 2026 */
+/* Alternative color palettes and typography for A/B testing */
+
+/* ========================================
+   EXPERIMENT 1: Vibrant Energy Palette
+   ======================================== */
+[data-theme="vibrant"] {
+  /* Background Colors - Slightly warmer dark */
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #252525;
+
+  /* Text Colors - High contrast */
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+
+  /* Vibrant Accent Colors */
+  --accent-primary: #ff6b35;      /* Vibrant coral */
+  --accent-hover: #ff8c42;        /* Bright orange */
+  --accent-secondary: #00d4aa;    /* Electric teal */
+
+  /* Semantic Colors */
+  --color-success: #00ff88;
+  --color-error: #ff4757;
+}
+
+/* ========================================
+   EXPERIMENT 2: Monochromatic Blue
+   ======================================== */
+[data-theme="monochrome-blue"] {
+  /* Background Colors */
+  --bg-primary: #0a192f;
+  --bg-secondary: #112240;
+  --bg-tertiary: #1a365d;
+
+  /* Text Colors */
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+
+  /* Blue monochromatic accents */
+  --accent-primary: #3b82f6;
+  --accent-hover: #60a5fa;
+  --accent-secondary: #06b6d4;
+
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-error: #ef4444;
+}
+
+/* ========================================
+   EXPERIMENT 3: Warm Earth Tones
+   ======================================== */
+[data-theme="warm-earth"] {
+  /* Background Colors */
+  --bg-primary: #1a1a0e;
+  --bg-secondary: #2d2d1a;
+  --bg-tertiary: #40402a;
+
+  /* Text Colors */
+  --text-primary: #f5f5dc;
+  --text-secondary: #d4d4aa;
+
+  /* Earth tone accents */
+  --accent-primary: #d97706;
+  --accent-hover: #ea580c;
+  --accent-secondary: #84cc16;
+
+  /* Semantic Colors */
+  --color-success: #65a30d;
+  --color-error: #dc2626;
+}
+
+/* ========================================
+   EXPERIMENT 4: High Contrast Accessibility
+   ======================================== */
+[data-theme="high-contrast"] {
+  /* Background Colors - Pure black/white */
+  --bg-primary: #000000;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #333333;
+
+  /* Text Colors - Maximum contrast */
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+
+  /* High visibility accents */
+  --accent-primary: #ffff00;      /* Yellow */
+  --accent-hover: #ffff99;        /* Light yellow */
+  --accent-secondary: #00ffff;    /* Cyan */
+
+  /* Semantic Colors */
+  --color-success: #00ff00;
+  --color-error: #ff0000;
+}
+
+/* ========================================
+   EXPERIMENT 5: Purple Dream
+   ======================================== */
+[data-theme="purple-dream"] {
+  /* Background Colors */
+  --bg-primary: #0f0a1a;
+  --bg-secondary: #1a1440;
+  --bg-tertiary: #2a1f5c;
+
+  /* Text Colors */
+  --text-primary: #f3f4f6;
+  --text-secondary: #c4b5fd;
+
+  /* Purple palette */
+  --accent-primary: #8b5cf6;
+  --accent-hover: #a78bfa;
+  --accent-secondary: #f59e0b;
+
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-error: #f87171;
+}
+
+/* ========================================
+   FONT EXPERIMENTS
+   ======================================== */
+
+/* Experiment A: System Font Stack */
+[data-font="system"] {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Experiment B: Serif Typography */
+[data-font="serif"] {
+  --font-sans: "Times New Roman", Times, serif;
+}
+
+/* Experiment C: Monospace */
+[data-font="mono"] {
+  --font-sans: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+}
+
+/* Experiment D: Geometric Sans */
+[data-font="geometric"] {
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* ========================================
+   TYPOGRAPHY SCALE EXPERIMENTS
+   ======================================== */
+
+/* Experiment: Compact Scale */
+[data-typography="compact"] {
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px */
+  --text-6xl: 3.75rem;   /* 60px */
+}
+
+/* Experiment: Generous Scale */
+[data-typography="generous"] {
+  --text-xs: 0.875rem;   /* 14px */
+  --text-sm: 1rem;       /* 16px */
+  --text-base: 1.125rem; /* 18px */
+  --text-lg: 1.25rem;    /* 20px */
+  --text-xl: 1.5rem;     /* 24px */
+  --text-2xl: 1.875rem;  /* 30px */
+  --text-3xl: 2.25rem;   /* 36px */
+  --text-4xl: 3rem;      /* 48px */
+  --text-5xl: 3.75rem;   /* 60px */
+  --text-6xl: 4.5rem;    /* 72px */
+}
