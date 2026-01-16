@@ -21,9 +21,11 @@ export default function PulseChatbot() {
   const [isTyping, setIsTyping] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const xaiVoiceClientRef = useRef<XAIVoiceClient | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const notificationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -44,12 +46,55 @@ export default function PulseChatbot() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
+  // Periodic notification for chat widget
+  useEffect(() => {
+    if (isOpen) {
+      // Hide notification when chat is open
+      setShowNotification(false);
+      if (notificationIntervalRef.current) {
+        clearInterval(notificationIntervalRef.current);
+        notificationIntervalRef.current = null;
+      }
+      return;
+    }
+
+    // Show notification periodically when chat is closed
+    const showNotificationPeriodically = () => {
+      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 3000); // Show for 3 seconds
+    };
+
+    // Show first notification after 8 seconds
+    const firstTimeout = setTimeout(() => {
+      showNotificationPeriodically();
+    }, 8000);
+
+    // Then show every 15 seconds
+    notificationIntervalRef.current = setInterval(() => {
+      showNotificationPeriodically();
+    }, 15000);
+
+    return () => {
+      clearTimeout(firstTimeout);
+      if (notificationIntervalRef.current) {
+        clearInterval(notificationIntervalRef.current);
+        notificationIntervalRef.current = null;
+      }
+    };
+  }, [isOpen]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (xaiVoiceClientRef.current) {
         xaiVoiceClientRef.current.disconnect();
         xaiVoiceClientRef.current = null;
+      }
+      if (notificationIntervalRef.current) {
+        clearInterval(notificationIntervalRef.current);
+        notificationIntervalRef.current = null;
       }
     };
   }, []);
@@ -289,10 +334,43 @@ export default function PulseChatbot() {
 
   return (
     <>
+      {/* Periodic Notification */}
+      <AnimatePresence>
+        {showNotification && !isOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: 20, scale: 0.8 }}
+            animate={{ 
+              opacity: [0, 1, 1, 0],
+              x: [20, 0, 0, 20],
+              scale: [0.8, 1, 1, 0.8],
+            }}
+            exit={{ opacity: 0, x: 20, scale: 0.8 }}
+            transition={{
+              duration: 3,
+              times: [0, 0.1, 0.9, 1],
+              ease: "easeInOut",
+            }}
+            className="fixed bottom-24 right-6 z-50 bg-bg-secondary border-2 border-accent-primary rounded-lg px-5 py-4 shadow-2xl max-w-sm glow-outline-orange"
+          >
+            <p className="text-base md:text-lg text-text-primary font-medium">
+              Need help? Click here to talk to our virtual guide!
+            </p>
+            <div className="absolute bottom-0 right-8 transform translate-y-full">
+              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" className="text-accent-primary">
+                <path d="M6 8L0 0h12L6 8z" fill="currentColor"/>
+              </svg>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Chat Toggle Button */}
       <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 bg-accent-primary hover:bg-accent-hover text-white p-4 rounded-full shadow-2xl transition-all duration-200"
+        onClick={() => {
+          setIsOpen(!isOpen);
+          setShowNotification(false); // Hide notification when clicked
+        }}
+        className="fixed bottom-6 right-6 z-50 border-2 border-accent-primary text-accent-primary hover:text-accent-hover bg-bg-primary p-4 rounded-full shadow-2xl transition-all duration-200 glow-outline-orange"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         aria-label="Toggle chat with Pulse AI"
@@ -442,7 +520,7 @@ export default function PulseChatbot() {
                 <button
                   type="submit"
                   disabled={isTyping || !input.trim()}
-                  className="px-4 py-2 bg-accent-primary hover:bg-accent-hover text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 border-2 border-accent-primary text-accent-primary hover:text-accent-hover rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed glow-outline-orange"
                 >
                   <svg
                     className="w-5 h-5"

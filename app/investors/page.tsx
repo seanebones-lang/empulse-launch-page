@@ -8,8 +8,20 @@ import FeatureBlock from '@/components/FeatureBlock';
 import SectionHeadline from '@/components/SectionHeadline';
 import EmailCapture from '@/components/EmailCapture';
 import ExitIntentModal from '@/components/ExitIntentModal';
+import StickyCTA from '@/components/StickyCTA';
+import StructuredData from '@/components/StructuredData';
 
 export default function Investors() {
+  const organizationData = {
+    name: 'EmPulse Music',
+    url: 'https://empulse.music',
+    logo: 'https://empulse.music/empulse-logo.png',
+    description: 'Music streaming platform at the intersection of streaming and wellness markets.',
+  };
+
+  return (
+    <>
+      <StructuredData type="Organization" data={organizationData} />
   return (
     <>
       {/* Hero Section */}
@@ -54,7 +66,7 @@ export default function Investors() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Button variant="primary" size="lg" href="/empulse-pitch-deck.pdf" download="empulse-pitch-deck.pdf">
+            <Button variant="primary" size="lg" href="https://docs.google.com/presentation/d/1vlmuB3UMTtDOqlUgjuFP_XaNthbXw9pM/edit?usp=drive_link&ouid=116475369707600561774&rtpof=true&sd=true">
               Get the Pitch Deck
             </Button>
             <Button variant="outline" size="lg" href="#opportunity">
@@ -168,7 +180,7 @@ export default function Investors() {
                 Technical Progress
               </h3>
               <ul className="space-y-2 text-text-secondary">
-                <li>• MVP 35% complete, live beta at blue7.dev</li>
+                <li>• MVP 100% complete, live beta at blue7.dev</li>
                 <li>• Core features functional: mood discovery, artist uploads, wellness tracking</li>
                 <li>• Stripe integration complete</li>
                 <li>• Modern, scalable tech stack: Next.js, Prisma, Supabase</li>
@@ -198,7 +210,7 @@ export default function Investors() {
           <div className="space-y-6">
             <Card hover={false}>
               <div className="flex flex-col md:flex-row md:items-center gap-4">
-                <div className="bg-accent-primary text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit">
+                <div className="border-2 border-accent-primary text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit glow-outline-orange">
                   Q1 2026
                 </div>
                 <p className="text-text-secondary text-lg">
@@ -209,7 +221,7 @@ export default function Investors() {
 
             <Card hover={false}>
               <div className="flex flex-col md:flex-row md:items-center gap-4">
-                <div className="bg-accent-primary/70 text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit">
+                <div className="border-2 border-accent-primary/70 text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit glow-outline-orange">
                   Q2 2026
                 </div>
                 <p className="text-text-secondary text-lg">
@@ -220,7 +232,7 @@ export default function Investors() {
 
             <Card hover={false}>
               <div className="flex flex-col md:flex-row md:items-center gap-4">
-                <div className="bg-accent-primary/50 text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit">
+                <div className="border-2 border-accent-primary/50 text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit glow-outline-orange">
                   Q3 2026
                 </div>
                 <p className="text-text-secondary text-lg">
@@ -231,7 +243,7 @@ export default function Investors() {
 
             <Card hover={false}>
               <div className="flex flex-col md:flex-row md:items-center gap-4">
-                <div className="bg-accent-primary/30 text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit">
+                <div className="border-2 border-accent-primary/30 text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit glow-outline-orange">
                   Q4 2026
                 </div>
                 <p className="text-text-secondary text-lg">
@@ -278,7 +290,7 @@ export default function Investors() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button variant="primary" size="lg" href="/empulse-pitch-deck.pdf" download="empulse-pitch-deck.pdf">
+            <Button variant="primary" size="lg" href="https://docs.google.com/presentation/d/1vlmuB3UMTtDOqlUgjuFP_XaNthbXw9pM/edit?usp=drive_link&ouid=116475369707600561774&rtpof=true&sd=true">
               Get the Pitch Deck
             </Button>
             <Button variant="secondary" size="lg" href="https://calendly.com/empulse">
@@ -319,6 +331,10 @@ export default function Investors() {
 
       {/* Exit Intent Modal */}
       <ExitIntentModal page="investors" />
+
+      {/* Sticky CTA (Mobile) */}
+      <StickyCTA variant="button" buttonText="Request Deck" buttonHref="https://docs.google.com/presentation/d/1vlmuB3UMTtDOqlUgjuFP_XaNthbXw9pM/edit?usp=drive_link&ouid=116475369707600561774&rtpof=true&sd=true" page="investors" />
+    </>
     </>
   );
 }

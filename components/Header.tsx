@@ -41,7 +41,7 @@ export default function Header() {
   const getCTA = () => {
     switch (pathname) {
       case '/investors':
-        return { text: 'Request Deck', href: '#contact' };
+        return { text: 'Request Deck', href: 'https://docs.google.com/presentation/d/1vlmuB3UMTtDOqlUgjuFP_XaNthbXw9pM/edit?usp=drive_link&ouid=116475369707600561774&rtpof=true&sd=true' };
       case '/artists':
         return { text: 'Join as Artist', href: '#signup' };
       case '/listeners':
@@ -98,7 +98,7 @@ export default function Header() {
           {/* Desktop CTA Button */}
           <Link
             href={cta.href}
-            className="hidden md:inline-flex bg-accent-primary hover:bg-accent-hover text-white px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
+            className="hidden md:inline-flex border-2 border-accent-primary text-accent-primary hover:text-accent-hover px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 hover:scale-105 glow-outline-orange"
           >
             {cta.text}
           </Link>
@@ -166,7 +166,7 @@ export default function Header() {
 
                 <Link
                   href={cta.href}
-                  className="mt-8 bg-accent-primary hover:bg-accent-hover text-white px-6 py-3 rounded-lg font-semibold text-center transition-all"
+                  className="mt-8 border-2 border-accent-primary text-accent-primary hover:text-accent-hover px-6 py-3 rounded-lg font-semibold text-center transition-all glow-outline-orange"
                 >
                   {cta.text}
                 </Link>

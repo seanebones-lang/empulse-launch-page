@@ -10,6 +10,7 @@ import Card from '@/components/Card';
 import FeatureBlock from '@/components/FeatureBlock';
 import SectionHeadline from '@/components/SectionHeadline';
 import ExitIntentModal from '@/components/ExitIntentModal';
+import StickyCTA from '@/components/StickyCTA';
 
 const artistSignupSchema = z.object({
   artistName: z.string().min(1, 'Artist/Band name is required'),
@@ -54,8 +55,20 @@ export default function Artists() {
     }
   };
 
+  const softwareApplicationData = {
+    name: 'EmPulse',
+    applicationCategory: 'MusicStreaming',
+    operatingSystem: 'Web, iOS, Android',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+  };
+
   return (
     <>
+      <StructuredData type="SoftwareApplication" data={softwareApplicationData} />
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
         <div className="max-w-5xl mx-auto text-center">
@@ -232,7 +245,7 @@ export default function Artists() {
           <div className="space-y-6">
             <Card hover={false}>
               <div className="flex flex-col md:flex-row md:items-center gap-4">
-                <div className="bg-accent-primary text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit">
+                <div className="border-2 border-accent-primary text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit glow-outline-orange">
                   NOW
                 </div>
                 <ul className="text-text-secondary text-lg list-disc list-inside">
@@ -245,7 +258,7 @@ export default function Artists() {
 
             <Card hover={false}>
               <div className="flex flex-col md:flex-row md:items-center gap-4">
-                <div className="bg-accent-primary/70 text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit">
+                <div className="border-2 border-accent-primary/70 text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit glow-outline-orange">
                   Q2 2026
                 </div>
                 <p className="text-text-secondary text-lg">
@@ -256,7 +269,7 @@ export default function Artists() {
 
             <Card hover={false}>
               <div className="flex flex-col md:flex-row md:items-center gap-4">
-                <div className="bg-accent-primary/50 text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit">
+                <div className="border-2 border-accent-primary/50 text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit glow-outline-orange">
                   Q3 2026
                 </div>
                 <p className="text-text-secondary text-lg">
@@ -267,7 +280,7 @@ export default function Artists() {
 
             <Card hover={false}>
               <div className="flex flex-col md:flex-row md:items-center gap-4">
-                <div className="bg-accent-primary/30 text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit">
+                <div className="border-2 border-accent-primary/30 text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap w-fit glow-outline-orange">
                   FUTURE
                 </div>
                 <ul className="text-text-secondary text-lg list-disc list-inside">
@@ -377,7 +390,7 @@ export default function Artists() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-8 py-4 bg-accent-secondary hover:bg-accent-secondary/90 text-white font-semibold text-lg rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-8 py-4 border-2 border-accent-secondary text-accent-secondary hover:text-accent-secondary/90 font-semibold text-lg rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed glow-outline-red"
               >
                 {isSubmitting ? 'Submitting...' : 'Join as an Artist'}
               </button>
@@ -415,6 +428,9 @@ export default function Artists() {
 
       {/* Exit Intent Modal */}
       <ExitIntentModal page="artists" />
+
+      {/* Sticky CTA (Mobile) */}
+      <StickyCTA variant="button" buttonText="Join as Artist" buttonHref="#signup" page="artists" />
     </>
   );
 }

@@ -10,6 +10,7 @@ import Card from '@/components/Card';
 import FeatureBlock from '@/components/FeatureBlock';
 import SectionHeadline from '@/components/SectionHeadline';
 import ExitIntentModal from '@/components/ExitIntentModal';
+import StickyCTA from '@/components/StickyCTA';
 
 const listenerWaitlistSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -52,8 +53,20 @@ export default function Listeners() {
     }
   };
 
+  const softwareApplicationData = {
+    name: 'EmPulse',
+    applicationCategory: 'MusicStreaming',
+    operatingSystem: 'Web, iOS, Android',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+  };
+
   return (
     <>
+      <StructuredData type="SoftwareApplication" data={softwareApplicationData} />
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
         <div className="max-w-5xl mx-auto text-center">
@@ -113,7 +126,13 @@ export default function Listeners() {
           <p className="text-xl text-text-secondary mb-8 max-w-3xl mx-auto">
             Mood: sad to happy. Energy: calm to energetic. Set them where you are, find music that matches. Or set them where you want to be, and let the music shift you there.
           </p>
-          <div className="text-6xl my-8">🎚️</div>
+          <div className="flex justify-center my-8">
+            <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent-primary">
+              <rect x="2" y="6" width="4" height="12" rx="1"/>
+              <rect x="10" y="3" width="4" height="15" rx="1"/>
+              <rect x="18" y="8" width="4" height="10" rx="1"/>
+            </svg>
+          </div>
           <p className="text-2xl text-accent-primary font-semibold">
             No more skipping through recommendations that miss the mark. No more algorithms pushing popularity over fit.
           </p>
@@ -150,7 +169,13 @@ export default function Listeners() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <Card>
-              <div className="text-4xl mb-4">📊</div>
+              <div className="text-4xl mb-4 flex justify-center">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent-primary">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+              </div>
               <h3 className="text-2xl font-semibold mb-3">
                 Mood Tracking
               </h3>
@@ -160,7 +185,15 @@ export default function Listeners() {
             </Card>
 
             <Card>
-              <div className="text-4xl mb-4">📝</div>
+              <div className="text-4xl mb-4 flex justify-center">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent-primary">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+              </div>
               <h3 className="text-2xl font-semibold mb-3">
                 Journaling
               </h3>
@@ -170,7 +203,11 @@ export default function Listeners() {
             </Card>
 
             <Card>
-              <div className="text-4xl mb-4">✨</div>
+              <div className="text-4xl mb-4 flex justify-center">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent-primary">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
               <h3 className="text-2xl font-semibold mb-3">
                 Affirmations
               </h3>
@@ -278,7 +315,7 @@ export default function Listeners() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-8 py-4 bg-accent-secondary hover:bg-accent-secondary/90 text-white font-semibold text-lg rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-8 py-4 border-2 border-accent-secondary text-accent-secondary hover:text-accent-secondary/90 font-semibold text-lg rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed glow-outline-red"
               >
                 {isSubmitting ? 'Joining...' : 'Count Me In'}
               </button>
@@ -316,6 +353,9 @@ export default function Listeners() {
 
       {/* Exit Intent Modal */}
       <ExitIntentModal page="listeners" />
+
+      {/* Sticky CTA (Mobile) */}
+      <StickyCTA variant="button" buttonText="Join Waitlist" buttonHref="#waitlist" page="listeners" />
     </>
   );
 }

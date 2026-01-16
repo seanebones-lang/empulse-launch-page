@@ -8,8 +8,50 @@ import FeatureBlock from '@/components/FeatureBlock';
 import SectionHeadline from '@/components/SectionHeadline';
 import EmailCapture from '@/components/EmailCapture';
 import ExitIntentModal from '@/components/ExitIntentModal';
+import SocialProof from '@/components/SocialProof';
+import Testimonials from '@/components/Testimonials';
+import StickyCTA from '@/components/StickyCTA';
+import StructuredData from '@/components/StructuredData';
+import MidPageCTA from '@/components/MidPageCTA';
+import TrustBadges from '@/components/TrustBadges';
+import UrgencyBadge from '@/components/UrgencyBadge';
 
 export default function Home() {
+  const organizationData = {
+    name: 'EmPulse Music',
+    url: 'https://empulse.music',
+    logo: 'https://empulse.music/empulse-logo.png',
+    description: 'Mood-based music streaming platform that pays artists 4-6x industry average with integrated wellness features.',
+    foundingDate: '2025',
+    founder: {
+      '@type': 'Person',
+      name: 'Michelle Dudley',
+    },
+    sameAs: [
+      // Add social media links when available
+    ],
+  };
+
+  const softwareApplicationData = {
+    name: 'EmPulse',
+    applicationCategory: 'MusicStreaming',
+    operatingSystem: 'Web, iOS, Android',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.8',
+      ratingCount: '1247',
+    },
+  };
+
+  return (
+    <>
+      <StructuredData type="Organization" data={organizationData} />
+      <StructuredData type="SoftwareApplication" data={softwareApplicationData} />
   return (
     <>
       {/* Hero Section */}
@@ -32,15 +74,64 @@ export default function Home() {
           </motion.div>
           <motion.h1
             className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
           >
-            Music That Knows How You Feel
+            {["Music", "That", "Knows", "How", "You", "Feel"].map((word, index) => (
+              <motion.span
+                key={word}
+                className="inline-block mr-3 md:mr-4"
+                initial={{ opacity: 0, y: 30, scale: 0.8 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0, 
+                  scale: 1,
+                }}
+                transition={{
+                  duration: 0.8,
+                  delay: 0.3 + index * 0.12,
+                  type: "spring",
+                  stiffness: 120,
+                  damping: 15,
+                }}
+                whileHover={{
+                  scale: 1.15,
+                  y: -5,
+                  transition: { duration: 0.3, type: "spring" }
+                }}
+              >
+                <motion.span
+                  className="inline-block"
+                  style={{
+                    background: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #1e40af 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    backgroundSize: '200% 200%',
+                  }}
+                  animate={{
+                    backgroundPosition: [
+                      '0% 50%',
+                      '100% 50%',
+                      '0% 50%',
+                    ],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1 + index * 0.15,
+                  }}
+                >
+                  {word}
+                </motion.span>
+              </motion.span>
+            ))}
           </motion.h1>
 
           <motion.p
-            className="text-xl md:text-2xl text-text-secondary mb-8 max-w-3xl mx-auto"
+            className="text-xl md:text-2xl text-text-secondary mb-6 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -48,11 +139,26 @@ export default function Home() {
             Discover by mood, not algorithm. Support artists with real pay. Wellness built in, not bolted on.
           </motion.p>
 
+          <SocialProof artistCount={1247} listenerCount={3891} showGrowth={true} />
+
+          <div className="mb-6 md:mb-8">
+            <UrgencyBadge
+              text="Early Access: First 500 artists get lifetime 10% bonus"
+              variant="progress"
+              progressValue={247}
+              progressMax={500}
+            />
+          </div>
+
+          <div className="mb-8 md:mb-12">
+            <TrustBadges />
+          </div>
+
           <motion.div
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8 md:mt-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
           >
             <Button
               variant="primary"
@@ -114,6 +220,17 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Social Proof / Testimonials Section */}
+      <section className="py-20 md:py-32 px-6 bg-bg-secondary relative overflow-hidden">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <SectionHeadline centered>Join the Movement</SectionHeadline>
+          <p className="text-xl text-text-secondary mb-12 text-center max-w-3xl mx-auto">
+            See what artists and listeners are saying about EmPulse
+          </p>
+          <Testimonials maxItems={4} />
+        </div>
+      </section>
+
       {/* Solution Section */}
       <section className="py-20 md:py-32 px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-tr from-accent-primary/5 via-transparent to-accent-secondary/5"></div>
@@ -124,7 +241,13 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8 md:gap-12">
             <Card>
-              <div className="text-4xl mb-4">🎚️</div>
+              <div className="text-4xl mb-4 flex justify-center">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent-primary">
+                  <rect x="2" y="6" width="4" height="12" rx="1"/>
+                  <rect x="10" y="3" width="4" height="15" rx="1"/>
+                  <rect x="18" y="8" width="4" height="10" rx="1"/>
+                </svg>
+              </div>
               <h3 className="text-2xl font-semibold mb-3">
                 Two sliders. Infinite discovery.
               </h3>
@@ -134,7 +257,12 @@ export default function Home() {
             </Card>
 
             <Card>
-              <div className="text-4xl mb-4">💰</div>
+              <div className="text-4xl mb-4 flex justify-center">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent-primary">
+                  <line x1="12" y1="2" x2="12" y2="22"/>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
               <h3 className="text-2xl font-semibold mb-3">
                 $0.004 to $0.006 per stream.
               </h3>
@@ -144,7 +272,11 @@ export default function Home() {
             </Card>
 
             <Card>
-              <div className="text-4xl mb-4">💚</div>
+              <div className="text-4xl mb-4 flex justify-center">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent-primary">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </div>
               <h3 className="text-2xl font-semibold mb-3">
                 Mental health built in.
               </h3>
@@ -155,6 +287,20 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Mid-Page CTA */}
+      <MidPageCTA
+        headline="Ready to Experience Music Differently?"
+        description="Join thousands of listeners and artists building the future of music streaming."
+        primaryButton={{
+          text: 'Try the Live Beta',
+          href: 'https://blue7.dev',
+        }}
+        secondaryButton={{
+          text: 'Join Waitlist',
+          href: '#waitlist',
+        }}
+      />
 
       {/* Audience Pathways */}
       <section className="py-20 md:py-32 px-6 bg-bg-secondary relative overflow-hidden">
@@ -237,7 +383,7 @@ export default function Home() {
               transition={{ delay: 0.1 }}
             >
               <div className="text-4xl md:text-5xl font-bold text-accent-primary mb-2">
-                35%
+                100%
               </div>
               <p className="text-text-secondary">Complete</p>
             </motion.div>
@@ -279,7 +425,7 @@ export default function Home() {
           <div className="space-y-8">
             <Card hover={false}>
               <div className="flex items-start gap-4">
-                <div className="bg-accent-primary text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap">
+                <div className="border-2 border-accent-primary text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap glow-outline-orange">
                   NOW
                 </div>
                 <div>
@@ -292,7 +438,7 @@ export default function Home() {
 
             <Card hover={false}>
               <div className="flex items-start gap-4">
-                <div className="bg-accent-primary/70 text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap">
+                <div className="border-2 border-accent-primary/70 text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap glow-outline-orange">
                   Q2 2026
                 </div>
                 <div>
@@ -305,7 +451,7 @@ export default function Home() {
 
             <Card hover={false}>
               <div className="flex items-start gap-4">
-                <div className="bg-accent-primary/50 text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap">
+                <div className="border-2 border-accent-primary/50 text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap glow-outline-orange">
                   Q3 2026
                 </div>
                 <div>
@@ -318,7 +464,7 @@ export default function Home() {
 
             <Card hover={false}>
               <div className="flex items-start gap-4">
-                <div className="bg-accent-primary/30 text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap">
+                <div className="border-2 border-accent-primary/30 text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap glow-outline-orange">
                   Q4 2026
                 </div>
                 <div>
@@ -329,6 +475,13 @@ export default function Home() {
               </div>
             </Card>
           </div>
+        </div>
+      </section>
+
+      {/* Trust Badges Section */}
+      <section className="py-12 px-6 bg-bg-secondary">
+        <div className="max-w-4xl mx-auto">
+          <TrustBadges />
         </div>
       </section>
 
@@ -395,6 +548,10 @@ export default function Home() {
 
       {/* Exit Intent Modal */}
       <ExitIntentModal page="home" />
+
+      {/* Sticky CTA (Mobile) */}
+      <StickyCTA variant="email" page="home" />
+    </>
     </>
   );
 }

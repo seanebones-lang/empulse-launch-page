@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import EmailCapture from './EmailCapture';
+import { trackExitIntent } from '@/lib/analytics';
 
 interface ExitIntentModalProps {
   page: 'home' | 'investors' | 'artists' | 'listeners';
@@ -48,6 +49,7 @@ export default function ExitIntentModal({ page }: ExitIntentModalProps) {
       if (e.clientY <= 0 && !hasShown) {
         setIsOpen(true);
         setHasShown(true);
+        trackExitIntent(page);
         sessionStorage.setItem('exitIntentShown', 'true');
       }
     };

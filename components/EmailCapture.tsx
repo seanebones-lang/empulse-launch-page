@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { trackEmailSignup, trackFormSubmission } from '@/lib/analytics';
 
 const emailSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -46,7 +47,11 @@ export default function EmailCapture({
       if (response.ok) {
         setIsSubmitted(true);
         reset();
+        trackEmailSignup(source);
+        trackFormSubmission('email_capture', true);
         setTimeout(() => setIsSubmitted(false), 5000);
+      } else {
+        trackFormSubmission('email_capture', false);
       }
     } catch (error) {
       console.error('Subscription error:', error);
@@ -82,7 +87,7 @@ export default function EmailCapture({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-8 py-3 bg-accent-primary hover:bg-accent-hover text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-8 py-3 border-2 border-accent-primary text-accent-primary hover:text-accent-hover font-semibold rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed glow-outline-orange"
         >
           {isSubmitting ? 'Submitting...' : buttonText}
         </button>

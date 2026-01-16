@@ -1,0 +1,10 @@
+# robots.txt for EmPulse Music
+User-agent: *
+Allow: /
+
+# Disallow admin and API routes
+Disallow: /api/
+Disallow: /_next/
+
+# Sitemap
+Sitemap: https://empulse.music/sitemap.xml

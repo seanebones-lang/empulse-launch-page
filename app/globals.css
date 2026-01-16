@@ -18,6 +18,24 @@
   font-display: swap;
 }
 
+/* Vermin Vibes Font */
+@font-face {
+  font-family: 'Vermin Vibes';
+  src: url('/fonts/vermin-vibes.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Shining Love Font */
+@font-face {
+  font-family: 'Shining Love';
+  src: url('/fonts/shining-love.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Apple Garamond Font */
 @font-face {
   font-family: 'Apple Garamond';
@@ -81,8 +99,8 @@
 
   /* Typography */
   --font-sans: 'Apple Garamond', serif;
-  --font-heading: 'Aerosoldier', var(--font-sans);
-  --font-subheading: 'Punk Typewriter', var(--font-sans);
+  --font-heading: 'Vermin Vibes', var(--font-sans);
+  --font-subheading: 'Shining Love', var(--font-sans);
 
   /* Border Radius */
   --radius-sm: 8px;
@@ -198,6 +216,28 @@
     animation: glow-pulse 3s ease-in-out infinite;
   }
   
+  /* Outline glow for yellow/orange elements */
+  .glow-outline-orange {
+    border: 2px solid var(--accent-primary);
+    box-shadow: 0 0 0 0 rgba(255, 184, 0, 0);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .glow-outline-orange:hover {
+    box-shadow: 0 0 15px rgba(255, 184, 0, 0.6), 0 0 30px rgba(255, 184, 0, 0.4);
+  }
+  
+  /* Outline glow for red elements */
+  .glow-outline-red {
+    border: 2px solid var(--accent-secondary);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .glow-outline-red:hover {
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.6), 0 0 30px rgba(239, 68, 68, 0.4);
+  }
+  
   /* Text gradient animations */
   .text-gradient-orange {
     background: linear-gradient(135deg, var(--accent-primary) 0%, var(--orange-end) 100%);
@@ -232,6 +272,44 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+  
+  /* Accessibility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  .sr-only:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  
+  /* Hero text color-changing animation - removed conflicting CSS animation */
 }
 
 /* Keyframe animations */
@@ -257,3 +335,4 @@
     filter: brightness(1.2);
   }
 }
+
