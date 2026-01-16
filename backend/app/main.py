@@ -9,13 +9,19 @@ load_dotenv()
 
 app = FastAPI(title="EmPulse Chatbot Backend")
 
-# CORS configuration
+# CORS configuration - Restricted to specific domains for security
+ALLOWED_ORIGINS = [
+    "https://empulse.mothership-ai.com",
+    "https://empulse-launch-page.vercel.app",
+    "http://localhost:3000",  # Development only
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with your Vercel domain
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "Origin", "Referer"],
 )
 
 @app.get("/healthz")

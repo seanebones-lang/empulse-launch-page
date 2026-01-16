@@ -1,20 +1,64 @@
 @import "tailwindcss";
 
+/* Aerosoldier Font */
+@font-face {
+  font-family: 'Aerosoldier';
+  src: url('/fonts/aerosoldier.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Punk Typewriter Font */
+@font-face {
+  font-family: 'Punk Typewriter';
+  src: url('/fonts/punk-typewriter.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Apple Garamond Font */
+@font-face {
+  font-family: 'Apple Garamond';
+  src: url('/fonts/apple-garamond.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Apple Garamond';
+  src: url('/fonts/apple-garamond-bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* EmPulse Design System - January 2026 */
 :root {
-  /* Background Colors */
-  --bg-primary: #0a0a0b;
-  --bg-secondary: #141416;
-  --bg-tertiary: #1e1e22;
+  /* Background Colors - Pure black to match logo */
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #141414;
 
   /* Text Colors */
-  --text-primary: #f5f5f7;
-  --text-secondary: #a1a1a6;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
 
-  /* Accent Colors */
-  --accent-primary: #0d9488;
-  --accent-hover: #14b8a6;
-  --accent-secondary: #f59e0b;
+  /* Accent Colors - Exact logo colors */
+  --accent-primary: #ffb800; /* Orange-yellow (ECG line & musical note) */
+  --accent-hover: #ffc833;
+  --accent-secondary: #ef4444; /* Red (left heart) */
+  --accent-tertiary: #3b82f6; /* Blue (right heart) */
+  
+  /* Gradient stops for animations */
+  --red-start: #ef4444;
+  --red-end: #dc2626;
+  --blue-start: #3b82f6;
+  --blue-end: #2563eb;
+  --orange-start: #ffb800;
+  --orange-end: #ffa500;
 
   /* Semantic Colors */
   --color-success: #10b981;
@@ -31,11 +75,14 @@
   --color-accent-primary: var(--accent-primary);
   --color-accent-hover: var(--accent-hover);
   --color-accent-secondary: var(--accent-secondary);
+  --color-accent-tertiary: var(--accent-tertiary);
   --color-success: var(--color-success);
   --color-error: var(--color-error);
 
   /* Typography */
-  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: 'Apple Garamond', serif;
+  --font-heading: 'Aerosoldier', var(--font-sans);
+  --font-subheading: 'Punk Typewriter', var(--font-sans);
 
   /* Border Radius */
   --radius-sm: 8px;
@@ -49,28 +96,164 @@
 @layer base {
   body {
     @apply bg-bg-primary text-text-primary antialiased;
-    font-family: var(--font-sans);
+    font-family: 'Apple Garamond', serif;
+    background: #000000;
+  }
+  
+  p {
+    font-family: 'Apple Garamond', serif;
+  }
+  
+  /* Remove any boxes/borders from logo images */
+  img[src*="empulse-logo"] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    display: block;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold;
+    font-family: var(--font-heading);
+  }
+  
+  .font-heading {
+    font-family: var(--font-heading);
   }
 
   h1 {
     @apply text-5xl md:text-6xl font-bold;
+    font-family: var(--font-heading);
+    background: linear-gradient(135deg, #60a5fa 0%, var(--accent-tertiary) 50%, #1e40af 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradient-shift 6s ease infinite;
   }
 
   h2 {
     @apply text-3xl md:text-5xl font-semibold;
+    font-family: var(--font-heading);
+    background: linear-gradient(135deg, #60a5fa 0%, var(--accent-tertiary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradient-shift 5s ease infinite;
   }
 
   h3 {
     @apply text-2xl md:text-3xl font-semibold;
+    font-family: var(--font-subheading);
+    background: linear-gradient(135deg, #60a5fa 0%, var(--accent-tertiary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  h4, h5, h6 {
+    font-family: var(--font-subheading);
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  /* Animated gradient backgrounds */
+  .gradient-red-blue {
+    background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-tertiary) 100%);
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+  
+  .gradient-orange-glow {
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--orange-end) 100%);
+    background-size: 200% 200%;
+    animation: gradient-shift 6s ease infinite;
+  }
+  
+  .gradient-heart {
+    background: linear-gradient(90deg, var(--accent-secondary) 0%, var(--accent-tertiary) 50%, var(--accent-secondary) 100%);
+    background-size: 200% 200%;
+    animation: gradient-shift 10s ease infinite;
+  }
+  
+  /* Glow animations */
+  .glow-orange {
+    box-shadow: 0 0 20px rgba(255, 184, 0, 0.5), 0 0 40px rgba(255, 184, 0, 0.3);
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+  
+  .glow-red {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5), 0 0 40px rgba(239, 68, 68, 0.3);
+    animation: glow-pulse 2.5s ease-in-out infinite;
+  }
+  
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.3);
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+  
+  /* Text gradient animations */
+  .text-gradient-orange {
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--orange-end) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradient-shift 4s ease infinite;
+  }
+  
+  .text-gradient-heart {
+    background: linear-gradient(90deg, var(--accent-secondary) 0%, var(--accent-tertiary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradient-shift 5s ease infinite;
+  }
+  
+  .text-gradient-blue {
+    background: linear-gradient(135deg, #60a5fa 0%, var(--accent-tertiary) 50%, #1e40af 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradient-shift 6s ease infinite;
+  }
+  
+  .text-gradient-blue-simple {
+    background: linear-gradient(135deg, #60a5fa 0%, var(--accent-tertiary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* Keyframe animations */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 0.8;
+    filter: brightness(1.2);
   }
 }

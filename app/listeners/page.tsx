@@ -57,8 +57,23 @@ export default function Listeners() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
         <div className="max-w-5xl mx-auto text-center">
+          <motion.div
+            className="flex justify-center mb-8"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <img 
+              src="/empulse-logo.png" 
+              alt="EmPulse Logo" 
+              className="h-20 w-20 md:h-28 md:w-28 lg:h-36 lg:w-36"
+              width={144}
+              height={144}
+              style={{ mixBlendMode: 'normal', border: 'none', outline: 'none', background: 'transparent' }}
+            />
+          </motion.div>
           <motion.h1
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -136,7 +151,7 @@ export default function Listeners() {
           <div className="grid md:grid-cols-3 gap-8">
             <Card>
               <div className="text-4xl mb-4">📊</div>
-              <h3 className="text-2xl font-semibold text-text-primary mb-3">
+              <h3 className="text-2xl font-semibold mb-3">
                 Mood Tracking
               </h3>
               <p className="text-text-secondary text-lg leading-relaxed">
@@ -146,7 +161,7 @@ export default function Listeners() {
 
             <Card>
               <div className="text-4xl mb-4">📝</div>
-              <h3 className="text-2xl font-semibold text-text-primary mb-3">
+              <h3 className="text-2xl font-semibold mb-3">
                 Journaling
               </h3>
               <p className="text-text-secondary text-lg leading-relaxed">
@@ -156,7 +171,7 @@ export default function Listeners() {
 
             <Card>
               <div className="text-4xl mb-4">✨</div>
-              <h3 className="text-2xl font-semibold text-text-primary mb-3">
+              <h3 className="text-2xl font-semibold mb-3">
                 Affirmations
               </h3>
               <p className="text-text-secondary text-lg leading-relaxed">

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { rateLimit, getRateLimitIdentifier } from '@/lib/rateLimit';
+import { sanitizeEmail, sanitizeText, escapeHtml } from '@/lib/sanitize';
 
 // Initialize Resend with API key from environment
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -30,37 +32,61 @@ const getSourceLabel = (source: string): string => {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting: 5 requests per IP per hour
+    const identifier = getRateLimitIdentifier(request);
+    const rateLimitResult = await rateLimit(identifier, 5, 60 * 60 * 1000);
+    
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
+            'Retry-After': Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
+          },
+        }
+      );
+    }
+
     const { email, source } = await request.json();
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
+    // Validate and sanitize inputs
+    let sanitizedEmail: string;
+    let sanitizedSource: string;
+    
+    try {
+      sanitizedEmail = sanitizeEmail(email);
+      sanitizedSource = sanitizeText(source || 'general', 100);
+    } catch (error) {
       return NextResponse.json(
-        { error: 'Invalid email address' },
+        { error: error instanceof Error ? error.message : 'Invalid input' },
         { status: 400 }
       );
     }
 
-    const recipientEmail = getRecipientEmail(source || 'general');
-    const sourceLabel = getSourceLabel(source || 'general');
+    const recipientEmail = getRecipientEmail(sanitizedSource);
+    const sourceLabel = getSourceLabel(sanitizedSource);
 
-    // Send email notification
+    // Send email notification with sanitized content
     if (resend) {
       try {
         await resend.emails.send({
           from: 'EmPulse <noreply@mothership-ai.com>',
           to: recipientEmail,
-          subject: `New ${sourceLabel} Lead: ${email}`,
+          subject: `New ${escapeHtml(sourceLabel)} Lead: ${escapeHtml(sanitizedEmail)}`,
           html: `
-            <h2>New ${sourceLabel} Lead</h2>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Source:</strong> ${source || 'general'}</p>
-            <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+            <h2>New ${escapeHtml(sourceLabel)} Lead</h2>
+            <p><strong>Email:</strong> ${escapeHtml(sanitizedEmail)}</p>
+            <p><strong>Source:</strong> ${escapeHtml(sanitizedSource)}</p>
+            <p><strong>Date:</strong> ${escapeHtml(new Date().toLocaleString())}</p>
             <hr>
             <p><small>This is an automated notification from the EmPulse website.</small></p>
           `,
         });
-        console.log(`Email sent to ${recipientEmail} for ${sourceLabel} lead: ${email}`);
+        console.log(`Email sent to ${recipientEmail} for ${sourceLabel} lead: ${sanitizedEmail}`);
       } catch (emailError) {
         console.error('Failed to send email:', emailError);
         // Continue - we'll still log it
@@ -81,16 +107,24 @@ export async function POST(request: NextRequest) {
     }
 
     // Log subscription
-    console.log(`New subscription: ${email} (source: ${source}) → ${recipientEmail}`);
+    console.log(`New subscription: ${sanitizedEmail} (source: ${sanitizedSource}) → ${recipientEmail}`);
 
     return NextResponse.json(
       { success: true, message: 'Subscribed successfully' },
-      { status: 200 }
+      { 
+        status: 200,
+        headers: {
+          'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+          'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
+        },
+      }
     );
   } catch (error) {
     console.error('Subscription error:', error);
+    // Don't expose internal error details
     return NextResponse.json(
-      { error: 'Subscription failed' },
+      { error: 'Subscription failed. Please try again later.' },
       { status: 500 }
     );
   }

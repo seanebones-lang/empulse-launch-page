@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -7,8 +8,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Logo and Beta Link */}
           <div className="col-span-1 md:col-span-2">
-            <Link href="/" className="text-2xl font-bold text-text-primary mb-4 inline-block">
-              EmPulse
+            <Link href="/" className="flex items-center gap-3 mb-4 inline-block hover:opacity-80 transition-opacity">
+              <Image 
+                src="/empulse-logo.png" 
+                alt="EmPulse Logo" 
+                width={48}
+                height={48}
+                className="h-10 w-10 md:h-12 md:w-12"
+              />
+              <span className="text-2xl font-bold text-text-primary font-heading">EmPulse</span>
             </Link>
             <p className="text-text-secondary mb-4">
               Music that knows how you feel. Discover by mood, support artists, feel better.

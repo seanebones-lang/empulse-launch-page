@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Button from '@/components/Button';
 import Card from '@/components/Card';
 import FeatureBlock from '@/components/FeatureBlock';
@@ -14,8 +15,23 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
         <div className="max-w-5xl mx-auto text-center">
+          <motion.div
+            className="flex justify-center mb-8"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Image 
+              src="/empulse-logo.png" 
+              alt="EmPulse Logo" 
+              width={160}
+              height={160}
+              priority
+              className="h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40"
+            />
+          </motion.div>
           <motion.h1
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -53,8 +69,9 @@ export default function Home() {
       </section>
 
       {/* Problem Section */}
-      <section id="problem" className="py-20 md:py-32 px-6 bg-bg-secondary">
-        <div className="max-w-7xl mx-auto">
+      <section id="problem" className="py-20 md:py-32 px-6 bg-bg-secondary relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-accent-secondary/5 via-transparent to-accent-tertiary/5 animate-pulse"></div>
+        <div className="max-w-7xl mx-auto relative z-10">
           <SectionHeadline centered>Streaming Is Broken</SectionHeadline>
 
           <div className="grid md:grid-cols-3 gap-8 md:gap-12">
@@ -75,21 +92,32 @@ export default function Home() {
             />
           </div>
 
-          <motion.p
-            className="text-2xl md:text-3xl text-accent-primary font-semibold text-center mt-16"
+          <motion.div
+            className="flex flex-col items-center gap-4 mt-16"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.5 }}
           >
-            EmPulse is built different.
-          </motion.p>
+            <img 
+              src="/empulse-logo.png" 
+              alt="EmPulse Logo" 
+              className="h-16 w-16 glow-orange"
+              width={64}
+              height={64}
+              style={{ mixBlendMode: 'normal', border: 'none', outline: 'none', background: 'transparent' }}
+            />
+            <p className="text-2xl md:text-3xl text-gradient-orange font-semibold text-center">
+              EmPulse is built different.
+            </p>
+          </motion.div>
         </div>
       </section>
 
       {/* Solution Section */}
-      <section className="py-20 md:py-32 px-6">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-20 md:py-32 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-tr from-accent-primary/5 via-transparent to-accent-secondary/5"></div>
+        <div className="max-w-7xl mx-auto relative z-10">
           <SectionHeadline centered>
             Discover by Feeling. Support Artists. Feel Better.
           </SectionHeadline>
@@ -97,7 +125,7 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8 md:gap-12">
             <Card>
               <div className="text-4xl mb-4">🎚️</div>
-              <h3 className="text-2xl font-semibold text-text-primary mb-3">
+              <h3 className="text-2xl font-semibold mb-3">
                 Two sliders. Infinite discovery.
               </h3>
               <p className="text-text-secondary text-lg leading-relaxed">
@@ -107,7 +135,7 @@ export default function Home() {
 
             <Card>
               <div className="text-4xl mb-4">💰</div>
-              <h3 className="text-2xl font-semibold text-text-primary mb-3">
+              <h3 className="text-2xl font-semibold mb-3">
                 $0.004 to $0.006 per stream.
               </h3>
               <p className="text-text-secondary text-lg leading-relaxed">
@@ -117,7 +145,7 @@ export default function Home() {
 
             <Card>
               <div className="text-4xl mb-4">💚</div>
-              <h3 className="text-2xl font-semibold text-text-primary mb-3">
+              <h3 className="text-2xl font-semibold mb-3">
                 Mental health built in.
               </h3>
               <p className="text-text-secondary text-lg leading-relaxed">
@@ -129,13 +157,14 @@ export default function Home() {
       </section>
 
       {/* Audience Pathways */}
-      <section className="py-20 md:py-32 px-6 bg-bg-secondary">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-20 md:py-32 px-6 bg-bg-secondary relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-bl from-accent-tertiary/5 via-transparent to-accent-primary/5"></div>
+        <div className="max-w-7xl mx-auto relative z-10">
           <SectionHeadline centered>Who Are You?</SectionHeadline>
 
           <div className="grid md:grid-cols-3 gap-8">
             <Card>
-              <h3 className="text-2xl font-semibold text-text-primary mb-3">
+              <h3 className="text-2xl font-semibold mb-3">
                 Fund the Wellness Music Revolution
               </h3>
               <p className="text-text-secondary mb-6">
@@ -147,7 +176,7 @@ export default function Home() {
             </Card>
 
             <Card>
-              <h3 className="text-2xl font-semibold text-text-primary mb-3">
+              <h3 className="text-2xl font-semibold mb-3">
                 Earn 4-6x More Per Stream
               </h3>
               <p className="text-text-secondary mb-6">
@@ -159,7 +188,7 @@ export default function Home() {
             </Card>
 
             <Card>
-              <h3 className="text-2xl font-semibold text-text-primary mb-3">
+              <h3 className="text-2xl font-semibold mb-3">
                 Join the Movement
               </h3>
               <p className="text-text-secondary mb-6">
@@ -306,6 +335,22 @@ export default function Home() {
       {/* Email Capture Section */}
       <section className="py-20 md:py-32 px-6">
         <div className="max-w-3xl mx-auto text-center">
+          <motion.div
+            className="flex justify-center mb-6"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.3 }}
+          >
+            <img 
+              src="/empulse-logo.png" 
+              alt="EmPulse Logo" 
+              className="h-12 w-12"
+              width={48}
+              height={48}
+              style={{ mixBlendMode: 'normal', border: 'none', outline: 'none', background: 'transparent' }}
+            />
+          </motion.div>
           <SectionHeadline centered>Stay in the Loop</SectionHeadline>
           <p className="text-xl text-text-secondary mb-8">
             Get updates on launch, features, and early access opportunities.

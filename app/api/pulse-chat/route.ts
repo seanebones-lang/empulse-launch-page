@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit, getRateLimitIdentifier } from '@/lib/rateLimit';
+import { sanitizeText } from '@/lib/sanitize';
 
 // Proxy to Railway backend API for Pulse AI chatbot
 // This route forwards requests to the real backend API
@@ -7,11 +9,41 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://mellow-trust
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting: 20 requests per IP per minute
+    const identifier = getRateLimitIdentifier(request);
+    const rateLimitResult = await rateLimit(identifier, 20, 60 * 1000);
+    
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
+            'Retry-After': Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
+          },
+        }
+      );
+    }
+
     const { message, history } = await request.json();
 
-    if (!message) {
+    // Validate and sanitize message
+    if (!message || typeof message !== 'string') {
       return NextResponse.json(
         { error: 'Message is required' },
+        { status: 400 }
+      );
+    }
+
+    let sanitizedMessage: string;
+    try {
+      sanitizedMessage = sanitizeText(message, 1000); // Max 1000 characters
+    } catch (error) {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : 'Invalid message format' },
         { status: 400 }
       );
     }
@@ -25,7 +57,7 @@ export async function POST(request: NextRequest) {
         'Origin': origin,
         'Referer': origin,
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ message: sanitizedMessage }),
     });
 
     if (!backendResponse.ok) {
@@ -36,12 +68,20 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { response: data.response },
-      { status: 200 }
+      { 
+        status: 200,
+        headers: {
+          'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+          'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
+        },
+      }
     );
   } catch (error) {
     console.error('Pulse chat error:', error);
+    // Don't expose internal error details
     return NextResponse.json(
-      { error: 'Chat failed', details: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Chat failed. Please try again later.' },
       { status: 500 }
     );
   }

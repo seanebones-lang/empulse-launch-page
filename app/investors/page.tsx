@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Metadata } from 'next';
+import Image from 'next/image';
 import Button from '@/components/Button';
 import Card from '@/components/Card';
 import FeatureBlock from '@/components/FeatureBlock';
@@ -15,8 +15,23 @@ export default function Investors() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
         <div className="max-w-5xl mx-auto text-center">
+          <motion.div
+            className="flex justify-center mb-8"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Image 
+              src="/empulse-logo.png" 
+              alt="EmPulse Logo" 
+              width={144}
+              height={144}
+              priority
+              className="h-20 w-20 md:h-28 md:w-28 lg:h-36 lg:w-36"
+            />
+          </motion.div>
           <motion.h1
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -56,14 +71,14 @@ export default function Investors() {
 
           <div className="grid md:grid-cols-2 gap-12 mb-16">
             <Card>
-              <h3 className="text-3xl font-semibold text-text-primary mb-4">Streaming Market</h3>
+              <h3 className="text-3xl font-semibold mb-4">Streaming Market</h3>
               <p className="text-text-secondary text-lg leading-relaxed">
                 $30B+ global streaming market dominated by platforms artists hate and listeners tolerate.
               </p>
             </Card>
 
             <Card>
-              <h3 className="text-3xl font-semibold text-text-primary mb-4">Wellness Audio Market</h3>
+              <h3 className="text-3xl font-semibold mb-4">Wellness Audio Market</h3>
               <p className="text-text-secondary text-lg leading-relaxed">
                 $10B+ wellness audio market growing 30% annually, completely disconnected from music streaming.
               </p>
@@ -113,7 +128,7 @@ export default function Investors() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <Card>
-              <h3 className="text-2xl font-semibold text-text-primary mb-4">
+              <h3 className="text-2xl font-semibold mb-4">
                 Mood-Based Discovery
               </h3>
               <p className="text-text-secondary text-lg leading-relaxed">
@@ -122,7 +137,7 @@ export default function Investors() {
             </Card>
 
             <Card>
-              <h3 className="text-2xl font-semibold text-text-primary mb-4">
+              <h3 className="text-2xl font-semibold mb-4">
                 Artist-First Economics
               </h3>
               <p className="text-text-secondary text-lg leading-relaxed">
@@ -131,7 +146,7 @@ export default function Investors() {
             </Card>
 
             <Card>
-              <h3 className="text-2xl font-semibold text-text-primary mb-4">
+              <h3 className="text-2xl font-semibold mb-4">
                 Integrated Wellness
               </h3>
               <p className="text-text-secondary text-lg leading-relaxed">

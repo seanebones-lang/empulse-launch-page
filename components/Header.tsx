@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -67,8 +68,16 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-text-primary hover:text-accent-primary transition-colors z-50">
-            EmPulse
+          <Link href="/" className="flex items-center gap-2 z-50 hover:opacity-80 transition-opacity">
+            <Image 
+              src="/empulse-logo.png" 
+              alt="EmPulse Logo" 
+              width={40}
+              height={40}
+              priority
+              className="h-8 w-8 md:h-10 md:w-10"
+            />
+            <span className="text-2xl font-bold text-text-primary font-heading">EmPulse</span>
           </Link>
 
           {/* Desktop Navigation */}

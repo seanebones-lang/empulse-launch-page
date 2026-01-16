@@ -17,7 +17,7 @@ export default function SectionHeadline({ children, subheadline, centered = fals
       viewport={{ once: true }}
       transition={{ duration: 0.4 }}
     >
-      <h2 className="text-4xl md:text-5xl font-semibold text-text-primary mb-4">{children}</h2>
+      <h2 className="text-4xl md:text-5xl font-semibold text-gradient-heart mb-4">{children}</h2>
       {subheadline && (
         <p className="text-xl text-text-secondary max-w-3xl">{subheadline}</p>
       )}

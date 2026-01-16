@@ -59,8 +59,23 @@ export default function Artists() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
         <div className="max-w-5xl mx-auto text-center">
+          <motion.div
+            className="flex justify-center mb-8"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <img 
+              src="/empulse-logo.png" 
+              alt="EmPulse Logo" 
+              className="h-20 w-20 md:h-28 md:w-28 lg:h-36 lg:w-36"
+              width={144}
+              height={144}
+              style={{ mixBlendMode: 'normal', border: 'none', outline: 'none', background: 'transparent' }}
+            />
+          </motion.div>
           <motion.h1
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -149,7 +164,7 @@ export default function Artists() {
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <Card>
-              <h3 className="text-2xl font-semibold text-text-primary mb-4">
+              <h3 className="text-2xl font-semibold mb-4">
                 One-Click Unpublish
               </h3>
               <p className="text-text-secondary text-lg leading-relaxed">
@@ -158,7 +173,7 @@ export default function Artists() {
             </Card>
 
             <Card>
-              <h3 className="text-2xl font-semibold text-text-primary mb-4">
+              <h3 className="text-2xl font-semibold mb-4">
                 Metadata You Control
               </h3>
               <p className="text-text-secondary text-lg leading-relaxed">
@@ -189,7 +204,7 @@ export default function Artists() {
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <Card>
-              <h3 className="text-2xl font-semibold text-text-primary mb-4">
+              <h3 className="text-2xl font-semibold mb-4">
                 Sell through your own channels
               </h3>
               <p className="text-text-secondary text-lg">
@@ -198,7 +213,7 @@ export default function Artists() {
             </Card>
 
             <Card>
-              <h3 className="text-2xl font-semibold text-text-primary mb-4">
+              <h3 className="text-2xl font-semibold mb-4">
                 Sell through EmPulse store
               </h3>
               <p className="text-text-secondary text-lg">

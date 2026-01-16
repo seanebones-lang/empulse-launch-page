@@ -25,7 +25,7 @@ export default function FeatureBlock({ icon, headline, body, delay = 0 }: Featur
         </div>
       )}
       <div>
-        <h3 className="text-2xl font-semibold text-text-primary mb-3">{headline}</h3>
+        <h3 className="text-2xl font-semibold mb-3">{headline}</h3>
         <p className="text-text-secondary text-lg leading-relaxed">{body}</p>
       </div>
     </motion.div>
