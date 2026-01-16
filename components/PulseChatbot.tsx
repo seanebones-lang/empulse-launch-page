@@ -479,7 +479,7 @@ export default function PulseChatbot() {
                   <div
                     className={`max-w-[80%] px-4 py-3 rounded-lg ${
                       message.role === 'user'
-                        ? 'bg-accent-primary text-white'
+                        ? 'bg-transparent border-2 border-accent-primary text-accent-primary'
                         : 'bg-bg-tertiary text-text-primary'
                     }`}
                   >
