@@ -478,6 +478,81 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Updates Section */}
+      <section className="py-20 md:py-32 px-6">
+        <div className="max-w-4xl mx-auto">
+          <SectionHeadline centered>Updates</SectionHeadline>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className="border-2 border-accent-primary glow-outline-orange">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="border-2 border-accent-primary text-accent-primary px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap glow-outline-orange shrink-0">
+                  NEW
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl md:text-3xl font-bold mb-3">
+                    Launch a Fully Branded, Custom-Trained Voice AI Chatbot in 48 Hours
+                  </h3>
+                  <p className="text-lg text-text-secondary mb-4">
+                    <strong className="text-accent-primary">$200 One-Time Setup</strong> (First Month Free)
+                  </p>
+                </div>
+              </div>
+
+              <div className="prose prose-lg max-w-none text-text-secondary mb-6">
+                <p className="mb-4">
+                  In 2026, robotic TTS is dead. Customers expect conversations that sound genuinely human—emotional intonation, natural pauses, accents, and context-aware responses. Ultra-realistic text-to-voice tech is now mature, powered by neural models from leaders like ElevenLabs, PlayHT, Respeecher, and emerging open-source challengers.
+                </p>
+
+                <p className="mb-4">
+                  Most platforms lock you into their ecosystem: high per-minute costs, limited white-labeling, or complex integrations. Agencies and businesses want plug-and-play: a branded chatbot widget they own, trained on their data (FAQs, docs, knowledge base), embeddable via simple snippet code, and sounding indistinguishably human.
+                </p>
+
+                <div className="bg-bg-secondary border border-accent-primary/20 rounded-lg p-6 mb-4">
+                  <h4 className="text-xl font-semibold mb-3 text-text-primary">What You Get for $200 One-Time Setup</h4>
+                  <ul className="space-y-2 list-disc list-inside">
+                    <li><strong>Fully white-labeled voice chatbot:</strong> No "Powered by" watermarks—custom logo, colors, fonts, and UI to match your site/app.</li>
+                    <li><strong>Custom training on your data:</strong> Upload PDFs, text files, FAQs, or links. Fine-tuned for hyper-relevant, accurate responses.</li>
+                    <li><strong>Embeddable snippet:</strong> One &lt;script&gt; tag + container div. Drop it into WordPress, custom sites, or apps—no heavy SDKs.</li>
+                    <li><strong>Realistic, non-robotic voices:</strong> Leverages state-of-the-art TTS (neural, expressive, low-latency) for natural flow—think emotional nuance, not Siri-style flatness.</li>
+                    <li><strong>48-hour turnaround:</strong> Once I receive your training docs/assets, delivery in 2 business days.</li>
+                    <li><strong>First month hosting included:</strong> Uptime, API access, monitoring, and usage coverage at no extra cost.</li>
+                  </ul>
+                </div>
+
+                <p className="mb-4">
+                  <strong>Ongoing?</strong> Optional $100/month via Stripe (cancel anytime) for continued hosting, security updates, performance tweaks, best-effort support, and retraining as needed. No lock-in—far below enterprise platforms charging $1k+/mo.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    href="https://deploysnip.mothership-ai.com"
+                    className="flex-1"
+                  >
+                    Learn More & Get Started
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    href="mailto:eleven@mothership-ai.com"
+                    className="flex-1"
+                  >
+                    Email: eleven@mothership-ai.com
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Trust Badges Section */}
       <section className="py-12 px-6 bg-bg-secondary">
         <div className="max-w-4xl mx-auto">
