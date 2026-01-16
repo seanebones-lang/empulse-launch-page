@@ -11,6 +11,7 @@ import FeatureBlock from '@/components/FeatureBlock';
 import SectionHeadline from '@/components/SectionHeadline';
 import ExitIntentModal from '@/components/ExitIntentModal';
 import StickyCTA from '@/components/StickyCTA';
+import StructuredData from '@/components/StructuredData';
 
 const artistSignupSchema = z.object({
   artistName: z.string().min(1, 'Artist/Band name is required'),

@@ -13,6 +13,7 @@ interface ReferralLinkProps {
 export default function ReferralLink({ userId, userType = 'listener', showStats = false }: ReferralLinkProps) {
   const [referralLink, setReferralLink] = useState<string>('');
   const [copied, setCopied] = useState(false);
+  const [canShare, setCanShare] = useState(false);
 
   useEffect(() => {
     if (userId) {
@@ -20,6 +21,10 @@ export default function ReferralLink({ userId, userType = 'listener', showStats 
     } else {
       // For demo/landing page - use a placeholder
       setReferralLink('https://empulse.music?ref=DEMO123');
+    }
+    // Check if Web Share API is available
+    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+      setCanShare(true);
     }
   }, [userId]);
 
@@ -71,7 +76,7 @@ export default function ReferralLink({ userId, userType = 'listener', showStats 
           </button>
         </div>
 
-        {navigator.share && (
+        {canShare && (
           <button
             onClick={handleShare}
             className="w-full sm:w-auto px-6 py-3 border-2 border-accent-secondary text-accent-secondary hover:bg-accent-secondary hover:text-white font-semibold rounded-lg transition-all glow-outline-red"

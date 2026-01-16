@@ -85,13 +85,13 @@ export function clearReferrals() {
 export function enableTrackingDebug() {
   if (typeof window === 'undefined') return;
   
-  const originalGtag = window.gtag;
-  window.gtag = (...args: any[]) => {
+  const originalGtag = window.gtag as ((...args: any[]) => void) | undefined;
+  window.gtag = ((...args: any[]) => {
     console.log('[Tracking Event]', args);
     if (originalGtag) {
-      originalGtag(...args);
+      (originalGtag as (...args: any[]) => void)(...args);
     }
-  };
+  }) as typeof window.gtag;
 }
 
 /**

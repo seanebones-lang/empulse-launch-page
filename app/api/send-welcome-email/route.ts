@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { emailTemplates, replaceTemplateVariables } from '@/lib/email-templates';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,6 +44,9 @@ export async function POST(request: NextRequest) {
       : template.subject;
 
     // Send email
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    
     const { data, error } = await resend.emails.send({
       from: 'EmPulse <noreply@mothership-ai.com>',
       to: email,
