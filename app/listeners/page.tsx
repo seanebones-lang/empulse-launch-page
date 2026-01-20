@@ -80,10 +80,10 @@ export default function Listeners() {
             <img 
               src="/empulse-logo.png" 
               alt="EmPulse Logo" 
-              className="h-20 w-20 md:h-28 md:w-28 lg:h-36 lg:w-36"
+              className="h-20 w-auto md:h-28 md:w-auto lg:h-36 lg:w-auto"
               width={144}
               height={144}
-              style={{ mixBlendMode: 'normal', border: 'none', outline: 'none', background: 'transparent' }}
+              style={{ mixBlendMode: 'normal', border: 'none', outline: 'none', background: 'transparent', objectFit: 'contain' }}
             />
           </motion.div>
           <motion.h1

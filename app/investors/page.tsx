@@ -39,7 +39,8 @@ export default function Investors() {
               width={144}
               height={144}
               priority
-              className="h-20 w-20 md:h-28 md:w-28 lg:h-36 lg:w-36"
+              className="h-20 w-auto md:h-28 md:w-auto lg:h-36 lg:w-auto"
+              style={{ objectFit: 'contain' }}
             />
           </motion.div>
           <motion.h1

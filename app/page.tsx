@@ -207,10 +207,10 @@ export default function Home() {
             <img 
               src="/empulse-logo.png" 
               alt="EmPulse Logo" 
-              className="h-16 w-16 glow-orange"
+              className="h-16 w-auto glow-orange"
               width={64}
               height={64}
-              style={{ mixBlendMode: 'normal', border: 'none', outline: 'none', background: 'transparent' }}
+              style={{ mixBlendMode: 'normal', border: 'none', outline: 'none', background: 'transparent', objectFit: 'contain' }}
             />
             <p className="text-2xl md:text-3xl text-gradient-orange font-semibold text-center">
               EmPulse is built different.
