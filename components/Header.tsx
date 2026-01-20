@@ -66,7 +66,7 @@ export default function Header() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between relative">
           {/* Logo - Top Left */}
           <Link href="/" className="flex items-center z-50 hover:opacity-80 transition-opacity">
             <Image 
@@ -80,13 +80,13 @@ export default function Header() {
             />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          {/* Desktop Navigation - Centered */}
+          <nav className="hidden md:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-base font-medium transition-colors ${
+                className={`text-lg font-medium transition-colors ${
                   pathname === link.href ? 'text-accent-primary' : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
