@@ -7,7 +7,7 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 
 // Get recipient email for artist signups
 const getArtistRecipientEmail = (): string => {
-  return process.env.ARTIST_EMAIL || process.env.GENERAL_EMAIL || 'empulse@mothership-ai.com';
+  return process.env.ARTIST_EMAIL || process.env.GENERAL_EMAIL || 'michellellvnw@gmail.com';
 };
 
 export async function POST(request: NextRequest) {

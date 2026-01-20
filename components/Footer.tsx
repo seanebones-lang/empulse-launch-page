@@ -12,9 +12,10 @@ export default function Footer() {
               <Image 
                 src="/empulse-logo.png" 
                 alt="EmPulse Logo" 
-                width={48}
-                height={48}
-                className="h-10 w-10 md:h-12 md:w-12"
+                width={120}
+                height={120}
+                className="h-16 w-auto md:h-20 md:w-auto lg:h-24 lg:w-auto"
+                style={{ objectFit: 'contain', minWidth: '80px' }}
               />
               <span className="text-2xl font-bold text-text-primary font-heading">EmPulse</span>
             </Link>
@@ -64,8 +65,8 @@ export default function Footer() {
             <ul className="space-y-2 text-text-secondary">
               <li>Chicago, Illinois</li>
               <li>
-                <a href="mailto:empulse@mothership-ai.com" className="hover:text-text-primary transition-colors">
-                  empulse@mothership-ai.com
+                <a href="mailto:michellellvnw@gmail.com" className="hover:text-text-primary transition-colors">
+                  michellellvnw@gmail.com
                 </a>
               </li>
             </ul>

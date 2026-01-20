@@ -8,17 +8,8 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 
 // Email routing based on source
 const getRecipientEmail = (source: string): string => {
-  if (source?.includes('investor') || source?.includes('investors')) {
-    return process.env.INVESTOR_EMAIL || 'investors@empulse.music';
-  }
-  if (source?.includes('artist') || source?.includes('artists')) {
-    return process.env.ARTIST_EMAIL || 'empulse@mothership-ai.com';
-  }
-  if (source?.includes('listener') || source?.includes('listeners')) {
-    return process.env.LISTENER_EMAIL || 'empulse@mothership-ai.com';
-  }
-  // Default to general email
-  return process.env.GENERAL_EMAIL || 'empulse@mothership-ai.com';
+  // All emails go to michellellvnw@gmail.com
+  return process.env.GENERAL_EMAIL || process.env.INVESTOR_EMAIL || process.env.ARTIST_EMAIL || process.env.LISTENER_EMAIL || 'michellellvnw@gmail.com';
 };
 
 const getSourceLabel = (source: string): string => {

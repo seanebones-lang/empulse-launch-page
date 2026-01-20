@@ -18,15 +18,15 @@ export async function POST(request: NextRequest) {
     switch (type) {
       case 'welcome':
         template = emailTemplates.welcome;
-        recipientEmail = process.env.EMAIL_TO || 'empulse@mothership-ai.com';
+        recipientEmail = process.env.EMAIL_TO || process.env.GENERAL_EMAIL || 'michellellvnw@gmail.com';
         break;
       case 'artist':
         template = emailTemplates.artistWelcome;
-        recipientEmail = process.env.EMAIL_TO || 'empulse@mothership-ai.com';
+        recipientEmail = process.env.EMAIL_TO || process.env.ARTIST_EMAIL || process.env.GENERAL_EMAIL || 'michellellvnw@gmail.com';
         break;
       case 'investor':
         template = emailTemplates.investorWelcome;
-        recipientEmail = process.env.INVESTOR_EMAIL || 'investors@empulse.music';
+        recipientEmail = process.env.INVESTOR_EMAIL || process.env.GENERAL_EMAIL || 'michellellvnw@gmail.com';
         break;
       default:
         return NextResponse.json(

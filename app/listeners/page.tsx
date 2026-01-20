@@ -342,10 +342,10 @@ export default function Listeners() {
           <div className="space-y-2 text-text-secondary">
             <p>
               <a
-                href="mailto:empulse@mothership-ai.com"
+                href="mailto:michellellvnw@gmail.com"
                 className="text-accent-primary hover:text-accent-hover transition-colors text-lg"
               >
-                empulse@mothership-ai.com
+                michellellvnw@gmail.com
               </a>
             </p>
           </div>

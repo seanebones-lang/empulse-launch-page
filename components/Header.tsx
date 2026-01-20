@@ -72,11 +72,11 @@ export default function Header() {
             <Image 
               src="/empulse-logo.png" 
               alt="EmPulse Logo" 
-              width={120}
-              height={120}
+              width={200}
+              height={200}
               priority
-              className="h-12 w-auto md:h-16 lg:h-20"
-              style={{ objectFit: 'contain' }}
+              className="h-16 w-auto md:h-24 lg:h-28"
+              style={{ objectFit: 'contain', minWidth: '120px' }}
             />
           </Link>
 

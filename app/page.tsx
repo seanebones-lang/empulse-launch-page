@@ -497,10 +497,17 @@ export default function Home() {
             <img 
               src="/empulse-logo.png" 
               alt="EmPulse Logo" 
-              className="h-12 w-12"
-              width={48}
-              height={48}
-              style={{ mixBlendMode: 'normal', border: 'none', outline: 'none', background: 'transparent' }}
+              className="h-24 w-auto md:h-32 md:w-auto lg:h-40 lg:w-auto"
+              width={160}
+              height={160}
+              style={{ 
+                mixBlendMode: 'normal', 
+                border: 'none', 
+                outline: 'none', 
+                background: 'transparent',
+                objectFit: 'contain',
+                minWidth: '120px'
+              }}
             />
           </motion.div>
           <SectionHeadline centered>Stay in the Loop</SectionHeadline>
@@ -524,10 +531,10 @@ export default function Home() {
           <div className="space-y-4 text-lg text-text-secondary">
             <p>
               <a
-                href="mailto:empulse@mothership-ai.com"
+                href="mailto:michellellvnw@gmail.com"
                 className="text-accent-primary hover:text-accent-hover transition-colors"
               >
-                empulse@mothership-ai.com
+                michellellvnw@gmail.com
               </a>
             </p>
             <p>Chicago, Illinois</p>
@@ -536,10 +543,10 @@ export default function Home() {
           <div className="mt-8 text-text-secondary">
             <p>For investor inquiries:</p>
             <a
-              href="mailto:investors@empulse.music"
+              href="mailto:michellellvnw@gmail.com"
               className="text-accent-primary hover:text-accent-hover transition-colors text-lg"
             >
-              investors@empulse.music
+              michellellvnw@gmail.com
             </a>
           </div>
         </div>

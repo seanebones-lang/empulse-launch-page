@@ -66,7 +66,10 @@ export default function Investors() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Button variant="primary" size="lg" href="https://docs.google.com/presentation/d/1vlmuB3UMTtDOqlUgjuFP_XaNthbXw9pM/edit?usp=drive_link&ouid=116475369707600561774&rtpof=true&sd=true">
+            <Button variant="primary" size="lg" href="/investors/invest">
+              Invest Now
+            </Button>
+            <Button variant="secondary" size="lg" href="https://docs.google.com/presentation/d/1vlmuB3UMTtDOqlUgjuFP_XaNthbXw9pM/edit?usp=drive_link&ouid=116475369707600561774&rtpof=true&sd=true">
               Get the Pitch Deck
             </Button>
             <Button variant="outline" size="lg" href="#opportunity">
@@ -290,10 +293,13 @@ export default function Investors() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button variant="primary" size="lg" href="https://docs.google.com/presentation/d/1vlmuB3UMTtDOqlUgjuFP_XaNthbXw9pM/edit?usp=drive_link&ouid=116475369707600561774&rtpof=true&sd=true">
+            <Button variant="primary" size="lg" href="/investors/invest">
+              Invest Now
+            </Button>
+            <Button variant="secondary" size="lg" href="https://docs.google.com/presentation/d/1vlmuB3UMTtDOqlUgjuFP_XaNthbXw9pM/edit?usp=drive_link&ouid=116475369707600561774&rtpof=true&sd=true">
               Get the Pitch Deck
             </Button>
-            <Button variant="secondary" size="lg" href="https://calendly.com/empulse">
+            <Button variant="outline" size="lg" href="https://calendly.com/empulse">
               Schedule a Call
             </Button>
           </div>
@@ -317,10 +323,10 @@ export default function Investors() {
                 <span className="text-text-primary font-semibold">Investor inquiries:</span>
                 <br />
                 <a
-                  href="mailto:investors@empulse.music"
+                  href="mailto:michellellvnw@gmail.com"
                   className="text-accent-primary hover:text-accent-hover transition-colors text-lg"
                 >
-                  investors@empulse.music
+                  michellellvnw@gmail.com
                 </a>
               </p>
               <p className="text-sm">Dallas, Texas</p>

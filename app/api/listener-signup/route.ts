@@ -7,7 +7,7 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 
 // Get recipient email for listener signups
 const getListenerRecipientEmail = (): string => {
-  return process.env.LISTENER_EMAIL || process.env.GENERAL_EMAIL || 'empulse@mothership-ai.com';
+  return process.env.LISTENER_EMAIL || process.env.GENERAL_EMAIL || 'michellellvnw@gmail.com';
 };
 
 export async function POST(request: NextRequest) {
