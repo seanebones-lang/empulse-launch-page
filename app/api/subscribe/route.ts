@@ -61,7 +61,65 @@ export async function POST(request: NextRequest) {
     const recipientEmail = getRecipientEmail(sanitizedSource);
     const sourceLabel = getSourceLabel(sanitizedSource);
 
-    // Send email notification with sanitized content
+    // Send confirmation email to user
+    let confirmationEmailSent = false;
+    if (resend) {
+      try {
+        const result = await resend.emails.send({
+          from: 'EmPulse <noreply@mothership-ai.com>',
+          to: sanitizedEmail,
+          subject: 'Welcome to EmPulse! 🎵',
+          html: `
+            <h2 style="color: #ffb800;">Welcome to EmPulse!</h2>
+            <p>Thanks for joining the EmPulse community! We're building something different—a music platform that actually pays artists fairly and helps you discover music by how it makes you feel.</p>
+            
+            <h3>What's Next?</h3>
+            <ul>
+              <li><strong>Try the Live Beta:</strong> <a href="https://blue7.dev" style="color: #ffb800;">blue7.dev</a> - Experience mood-based discovery right now!</li>
+              <li><strong>Stay Updated:</strong> We'll send you updates on launch, features, and early access opportunities.</li>
+              <li><strong>Join the Movement:</strong> We're at the intersection of streaming, wellness, and creator economy.</li>
+            </ul>
+            
+            <h3>What Makes EmPulse Different?</h3>
+            <ul>
+              <li>🎵 <strong>Mood-Based Discovery:</strong> Two sliders for mood and energy - find music by feeling, not algorithms</li>
+              <li>💰 <strong>Artist-First Economics:</strong> Artists earn $0.004-$0.006 per stream (4-6x industry average)</li>
+              <li>🧠 <strong>Wellness Built In:</strong> Mood tracking, journaling, and affirmations integrated into the listening experience</li>
+            </ul>
+            
+            <p><strong>Current Status:</strong></p>
+            <ul>
+              <li>1,247 artists on the platform</li>
+              <li>3,891 listeners</li>
+              <li>MVP 100% complete - live beta at <a href="https://blue7.dev" style="color: #ffb800;">blue7.dev</a></li>
+              <li>Public launch: Q1 2026</li>
+            </ul>
+            
+            <p>Questions? Contact us at <a href="mailto:michellellvnw@gmail.com" style="color: #ffb800;">michellellvnw@gmail.com</a></p>
+            
+            <hr>
+            <p><small>EmPulse Music | NextEleven Studios LLC<br>
+            <a href="https://empulse.music" style="color: #ffb800;">empulse.music</a></small></p>
+          `,
+        });
+        if (result.data) {
+          confirmationEmailSent = true;
+          console.log(`✅ Confirmation email sent to ${sanitizedEmail} (ID: ${result.data.id})`);
+        } else if (result.error) {
+          console.error('❌ Resend API error:', result.error);
+        }
+      } catch (emailError) {
+        console.error('❌ Failed to send confirmation email:', emailError);
+        // Log the full error for debugging
+        if (emailError instanceof Error) {
+          console.error('Error details:', emailError.message, emailError.stack);
+        }
+      }
+    } else {
+      console.warn('⚠️ Resend API key not configured - confirmation email not sent');
+    }
+
+    // Send email notification to admin with sanitized content
     if (resend) {
       try {
         await resend.emails.send({
@@ -79,7 +137,7 @@ export async function POST(request: NextRequest) {
         });
         console.log(`Email sent to ${recipientEmail} for ${sourceLabel} lead: ${sanitizedEmail}`);
       } catch (emailError) {
-        console.error('Failed to send email:', emailError);
+        console.error('Failed to send notification email:', emailError);
         // Continue - we'll still log it
       }
     }
