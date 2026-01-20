@@ -67,17 +67,17 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 z-50 hover:opacity-80 transition-opacity">
+          {/* Logo - Top Left */}
+          <Link href="/" className="flex items-center z-50 hover:opacity-80 transition-opacity">
             <Image 
               src="/empulse-logo.png" 
               alt="EmPulse Logo" 
-              width={40}
-              height={40}
+              width={120}
+              height={120}
               priority
-              className="h-8 w-8 md:h-10 md:w-10"
+              className="h-12 w-auto md:h-16 lg:h-20"
+              style={{ objectFit: 'contain' }}
             />
-            <span className="text-2xl font-bold text-text-primary font-heading">EmPulse</span>
           </Link>
 
           {/* Desktop Navigation */}

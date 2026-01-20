@@ -57,21 +57,20 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
         <div className="max-w-5xl mx-auto text-center">
-          <motion.div
-            className="flex justify-center mb-8"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Image 
-              src="/empulse-logo.png" 
-              alt="EmPulse Logo" 
-              width={160}
-              height={160}
-              priority
-              className="h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40"
-            />
-          </motion.div>
+          <Image 
+            src="/empulse-heart.png" 
+            alt="EmPulse Heart Logo" 
+            width={640}
+            height={640}
+            priority
+            className="h-96 w-96 md:h-[32rem] md:w-[32rem] lg:h-[40rem] lg:w-[40rem] mx-auto mb-8"
+            style={{ 
+              mixBlendMode: 'normal', 
+              background: 'transparent',
+              objectFit: 'contain',
+              display: 'block'
+            }}
+          />
           <motion.h1
             className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
             initial={{ opacity: 0 }}

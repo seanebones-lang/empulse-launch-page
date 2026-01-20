@@ -74,18 +74,24 @@ export default function Artists() {
       <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
         <div className="max-w-5xl mx-auto text-center">
           <motion.div
-            className="flex justify-center mb-8"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
+            className="mx-auto mb-8 flex justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
           >
-            <img 
-              src="/empulse-logo.png" 
-              alt="EmPulse Logo" 
-              className="h-20 w-20 md:h-28 md:w-28 lg:h-36 lg:w-36"
-              width={144}
-              height={144}
-              style={{ mixBlendMode: 'normal', border: 'none', outline: 'none', background: 'transparent' }}
+            <motion.img 
+              src="/empulse-heart.png" 
+              alt="EmPulse Heart Logo" 
+              className="h-[4.9rem] w-[4.9rem] md:h-[6.9rem] md:w-[6.9rem] lg:h-[8.8rem] lg:w-[8.8rem] block shimmer-sway"
+              width={141}
+              height={141}
+              style={{ 
+                mixBlendMode: 'normal', 
+                border: 'none', 
+                outline: 'none', 
+                background: 'transparent',
+                objectFit: 'contain'
+              }}
             />
           </motion.div>
           <motion.h1
