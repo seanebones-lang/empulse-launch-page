@@ -55,6 +55,18 @@ export default function Button({
         </a>
       );
     }
+    // Use regular anchor tag for hash links (same-page navigation)
+    if (href.startsWith('#')) {
+      return (
+        <a 
+          href={href} 
+          className={classes}
+          onClick={() => trackButtonClick(String(children), 'button-hash')}
+        >
+          {children}
+        </a>
+      );
+    }
     // Use regular anchor tag for external URLs
     if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:') || href.startsWith('tel:')) {
       return (
