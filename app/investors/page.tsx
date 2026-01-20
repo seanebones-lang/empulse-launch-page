@@ -299,7 +299,7 @@ export default function Investors() {
             <Button variant="secondary" size="lg" href="https://docs.google.com/presentation/d/1vlmuB3UMTtDOqlUgjuFP_XaNthbXw9pM/edit?usp=drive_link&ouid=116475369707600561774&rtpof=true&sd=true">
               Get the Pitch Deck
             </Button>
-            <Button variant="outline" size="lg" href="https://calendly.com/empulse">
+            <Button variant="outline" size="lg" href="mailto:michellellvnw@gmail.com?subject=Schedule a Call - EmPulse Investor Inquiry">
               Schedule a Call
             </Button>
           </div>
