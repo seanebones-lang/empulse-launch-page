@@ -19,11 +19,11 @@ const investorFormSchema = z.object({
   
   // Step 2: Investment Details
   investmentAmount: z.string().min(1, 'Investment amount is required'),
-  investmentType: z.enum(['individual', 'entity', 'syndicate'], {
-    required_error: 'Please select investment type',
+  investmentType: z.enum(['individual', 'entity', 'syndicate'] as const, {
+    message: 'Please select investment type',
   }),
-  accreditedInvestor: z.enum(['yes', 'no'], {
-    required_error: 'Please confirm accreditation status',
+  accreditedInvestor: z.enum(['yes', 'no'] as const, {
+    message: 'Please confirm accreditation status',
   }),
   
   // Step 3: Documentation
