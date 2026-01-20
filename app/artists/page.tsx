@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useState } from 'react';
+import Image from 'next/image';
 import Button from '@/components/Button';
 import Card from '@/components/Card';
 import FeatureBlock from '@/components/FeatureBlock';
@@ -79,19 +80,14 @@ export default function Artists() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <motion.img 
-              src="/empulse-heart.png" 
-              alt="EmPulse Heart Logo" 
-              className="h-[2.45rem] w-[2.45rem] md:h-[3.45rem] md:w-[3.45rem] lg:h-[4.4rem] lg:w-[4.4rem] block shimmer-sway"
-              width={71}
-              height={71}
-              style={{ 
-                mixBlendMode: 'normal', 
-                border: 'none', 
-                outline: 'none', 
-                background: 'transparent',
-                objectFit: 'contain'
-              }}
+            <Image 
+              src="/empulse-logo.png" 
+              alt="EmPulse Logo" 
+              width={200}
+              height={200}
+              priority
+              className="h-20 w-auto md:h-28 md:w-auto lg:h-36 lg:w-auto"
+              style={{ objectFit: 'contain', minWidth: '120px' }}
             />
           </motion.div>
           <motion.h1
