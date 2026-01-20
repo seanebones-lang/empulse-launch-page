@@ -82,9 +82,9 @@ export default function Artists() {
             <motion.img 
               src="/empulse-heart.png" 
               alt="EmPulse Heart Logo" 
-              className="h-[4.9rem] w-[4.9rem] md:h-[6.9rem] md:w-[6.9rem] lg:h-[8.8rem] lg:w-[8.8rem] block shimmer-sway"
-              width={141}
-              height={141}
+              className="h-[2.45rem] w-[2.45rem] md:h-[3.45rem] md:w-[3.45rem] lg:h-[4.4rem] lg:w-[4.4rem] block shimmer-sway"
+              width={71}
+              height={71}
               style={{ 
                 mixBlendMode: 'normal', 
                 border: 'none', 
