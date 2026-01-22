@@ -67,7 +67,7 @@ export default function Investors() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Button variant="primary" size="lg" href="/investors/invest">
+            <Button variant="primary" size="lg" href="https://buy.stripe.com/eVq8wO1CT3CNgyA5CVcbC00">
               Invest Now
             </Button>
             <Button variant="secondary" size="lg" href="https://docs.google.com/presentation/d/1vlmuB3UMTtDOqlUgjuFP_XaNthbXw9pM/edit?usp=drive_link&ouid=116475369707600561774&rtpof=true&sd=true">
@@ -294,7 +294,7 @@ export default function Investors() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button variant="primary" size="lg" href="/investors/invest">
+            <Button variant="primary" size="lg" href="https://buy.stripe.com/eVq8wO1CT3CNgyA5CVcbC00">
               Invest Now
             </Button>
             <Button variant="secondary" size="lg" href="https://docs.google.com/presentation/d/1vlmuB3UMTtDOqlUgjuFP_XaNthbXw9pM/edit?usp=drive_link&ouid=116475369707600561774&rtpof=true&sd=true">
